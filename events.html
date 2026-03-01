@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Events | Ratnakar Pawar</title>
+  <meta name="description" content="Speaking engagements, conferences, and events involving Ratnakar Pawar in AI safety and trust & safety.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">RP</a>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html">Profile</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="events.html" class="nav-link-active">Events</a></li>
+        <li><a href="service.html">Service</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <section class="page-header">
+    <div class="container">
+      <h1>Events</h1>
+      <p>Conferences, research programs, and speaking engagements.</p>
+    </div>
+  </section>
+
+  <!-- Events Content -->
+  <section class="section events-section">
+    <div class="container">
+
+      <h3>Upcoming</h3>
+      <div class="events-list">
+        <div class="event-card">
+          <span class="event-badge upcoming">Upcoming</span>
+          <h4>SPAR: AI Safety Research</h4>
+          <p class="event-meta">Spring 2026 &middot; Stanford / UC Berkeley</p>
+          <p>Researching Human-AI Complementarity for Identifying Harm, investigating how human expertise and AI capabilities can be combined to improve safety evaluations. <a href="https://sparai.org/projects/sp26/recu4ePI8o6thONSs" target="_blank" rel="noopener">Project page &rarr;</a></p>
+        </div>
+
+        <div class="event-card">
+          <span class="event-badge upcoming">Upcoming</span>
+          <h4>AI Safety Camp: Democratizing Evals</h4>
+          <p class="event-meta">Spring 2026</p>
+          <p>Working on making AI safety evaluation and red teaming tools more accessible to a broader community of researchers and organizations. <a href="https://www.aisafety.camp/#h.aejyh18zkvbc" target="_blank" rel="noopener">Project page &rarr;</a></p>
+        </div>
+
+        <div class="event-card">
+          <span class="event-badge upcoming">Upcoming</span>
+          <h4>TrustCon 2026</h4>
+          <p class="event-meta">2026 &middot; Program Committee</p>
+          <p>Serving on the program committee for TrustCon 2026, helping shape the conference agenda around trust & safety and AI safety.</p>
+        </div>
+      </div>
+
+      <h3>Past</h3>
+      <div class="events-list">
+        <div class="event-card">
+          <span class="event-badge past">Past</span>
+          <h4>Stanford TSRC: Bias & Fairness in AI</h4>
+          <p class="event-meta">Stanford Trust & Safety Research Conference</p>
+          <p>Presented research on measuring and mitigating biases in AI content moderation systems, including LLM-based synthetic data generation for bias correction across protected groups. <a href="https://www.techpolicy.press/researchers-explore-the-use-of-llms-for-content-moderation/" target="_blank" rel="noopener">Tech Policy Press coverage &rarr;</a></p>
+        </div>
+
+        <div class="event-card">
+          <span class="event-badge past">Past</span>
+          <h4>OpenAI Safety Hackathon: Self Harm Detection</h4>
+          <p class="event-meta">Winner &middot; $5,000 Prize</p>
+          <p>Won the hackathon with an open-sourced system for detecting self-harm content using multimodal analysis to identify at-risk users and enable timely intervention.</p>
+        </div>
+
+        <div class="event-card">
+          <span class="event-badge past">Past</span>
+          <h4>TSPA Coffee Hours</h4>
+          <p class="event-meta">Trust & Safety Professional Association</p>
+          <p>Regular participant and contributor to TSPA community discussions on trust & safety practices, tooling, and emerging challenges.</p>
+        </div>
+
+        <div class="event-card">
+          <span class="event-badge past">Past</span>
+          <h4>AI/ML Summit</h4>
+          <p class="event-meta">Sony Interactive Entertainment</p>
+          <p>Presented on trust & safety ML systems, sharing learnings from building production-scale content moderation and safety infrastructure.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p class="footer-copy">&copy; 2026 Ratnakar Pawar</p>
+      <div class="footer-links">
+        <a href="contact.html">Contact</a>
+        <a href="https://linkedin.com/in/ratnakarpawar" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/rpwr021" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const toggle = document.getElementById('nav-toggle');
+    const links = document.getElementById('nav-links');
+    toggle.addEventListener('click', () => {
+      links.classList.toggle('open');
+      toggle.classList.toggle('active');
+    });
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', () => {
+        links.classList.remove('open');
+        toggle.classList.remove('active');
+      });
+    });
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 10);
+    });
+  </script>
+
+</body>
+</html>

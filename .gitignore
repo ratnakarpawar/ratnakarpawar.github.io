@@ -1,0 +1,11 @@
+# Confidential documents
+*.pdf
+*.docx
+*.txt
+
+# System files
+.DS_Store
+.claude/
+
+# Original photo
+photo_o.jpg

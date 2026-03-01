@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Service | Ratnakar Pawar</title>
+  <meta name="description" content="Service, affiliations, and advisory roles of Ratnakar Pawar in AI safety and trust & safety.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">RP</a>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html">Profile</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="events.html">Events</a></li>
+        <li><a href="service.html" class="nav-link-active">Service</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <section class="page-header">
+    <div class="container">
+      <h1>Service</h1>
+      <p>Affiliations, program committees, and advisory roles.</p>
+    </div>
+  </section>
+
+  <!-- Affiliations & Roles -->
+  <section class="section">
+    <div class="container">
+      <h2>Affiliations & Roles</h2>
+      <div class="service-grid">
+
+        <div class="service-card">
+          <h4>TrustCon 2026</h4>
+          <p>Program Committee member, helping shape the conference agenda and review submissions on trust & safety and AI safety.</p>
+        </div>
+
+        <div class="service-card">
+          <h4>Stanford T&S Course</h4>
+          <p>Judge for Stanford's Trust & Safety course, evaluating student projects on content moderation, platform safety, and AI governance.</p>
+        </div>
+
+        <div class="service-card">
+          <h4>ROOST Collaborator</h4>
+          <p>Collaborating with ROOST on child safety model weights, contributing to open-source tooling for detecting child exploitation content.</p>
+        </div>
+
+        <div class="service-card">
+          <h4>Trust & Safety Professional Association</h4>
+          <p>Active member of TSPA, contributing to community knowledge-sharing on trust & safety best practices and emerging challenges.</p>
+        </div>
+
+        <div class="service-card">
+          <h4>Integrity Institute</h4>
+          <p>Member of the Integrity Institute, a community of trust & safety and integrity professionals working to improve online platforms.</p>
+        </div>
+
+        <div class="service-card">
+          <h4>ACL ICON NLP 2021</h4>
+          <p>Reviewer for ACL ICON 2021, evaluating research submissions in natural language processing and computational linguistics.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Advisory & Consulting -->
+  <section class="section section-alt">
+    <div class="container">
+      <h2>Advisory & Consulting</h2>
+      <div class="consulting-section">
+        <h3>AI Safety & Trust & Safety ML Advisory</h3>
+        <p>I'm available for advisory and consulting engagements in the following areas:</p>
+        <ul>
+          <li>AI safety evaluation, red teaming, and policy development</li>
+          <li>Trust & safety ML system design: content moderation, anti-abuse, child safety</li>
+          <li>Bias and fairness auditing for ML models</li>
+          <li>Responsible AI frameworks and governance</li>
+        </ul>
+        <p>If you're interested in working together, please <a href="contact.html">get in touch</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p class="footer-copy">&copy; 2026 Ratnakar Pawar</p>
+      <div class="footer-links">
+        <a href="contact.html">Contact</a>
+        <a href="https://linkedin.com/in/ratnakarpawar" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/rpwr021" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const toggle = document.getElementById('nav-toggle');
+    const links = document.getElementById('nav-links');
+    toggle.addEventListener('click', () => {
+      links.classList.toggle('open');
+      toggle.classList.toggle('active');
+    });
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', () => {
+        links.classList.remove('open');
+        toggle.classList.remove('active');
+      });
+    });
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 10);
+    });
+  </script>
+
+</body>
+</html>
