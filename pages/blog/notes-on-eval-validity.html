@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notes on Making AI Evals Actually Measure What They Claim | Ratnakar Pawar</title>
+  <meta name="description" content="Reading notes on construct validity and reproducibility in AI safety evaluations.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true,
+      securityLevel: 'loose',
+      theme: 'base',
+      flowchart: {
+        nodeSpacing: 40,
+        rankSpacing: 60,
+        padding: 20,
+        useMaxWidth: true
+      },
+      themeVariables: {
+        primaryColor: '#F4EFE6',
+        primaryBorderColor: '#E4DDD2',
+        primaryTextColor: '#1a1a1a',
+        lineColor: '#8B6F4E',
+        secondaryColor: '#fff',
+        tertiaryColor: '#FDFBF7',
+        fontFamily: 'Inter, sans-serif',
+        fontSize: '29px'
+      }
+    });
+  </script>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="../../index.html" class="nav-logo">RP</a>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="../../index.html">Profile</a></li>
+        <li><a href="../blog.html" class="nav-link-active">Blog</a></li>
+        <li><a href="../events.html">Events</a></li>
+        <li><a href="../service.html">Service</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Article -->
+  <article class="blog-post">
+    <div class="container">
+
+      <header class="post-header">
+        <p class="post-date">February 2026</p>
+        <h1>Notes on Making AI Evals Actually Measure What They Claim</h1>
+        <p class="post-subtitle">Reading notes on construct validity and reproducibility frameworks for AI safety evaluations.</p>
+      </header>
+
+      <div class="post-body">
+
+        <p>I've been thinking about what makes an AI safety evaluation trustworthy. Not whether a model passes or fails a benchmark, but whether passing actually means what we think it means. Two ideas keep coming up: <strong>construct validity</strong> (does the eval measure what it claims to measure?) and <strong>reproducibility</strong> (can you rerun it and explain any difference?). These are my notes on both.</p>
+
+        <h2>Why bother with construct validity</h2>
+
+        <p>If you're new to AI safety evals, this is the single most important concept to internalize. In traditional ML, evaluation is relatively straightforward: you have a test set, you measure accuracy or F1, and the metric maps cleanly to what you care about. A spam classifier with 99% precision on held-out data is, in fact, good at catching spam.</p>
+
+        <p>LLM safety evals don't work like that. The thing you're trying to measure ("is this model deceptive?", "will it help with bioweapons?", "does it comply with policy?") is abstract, contested, and context-dependent. There's no ground-truth label set for "deceptiveness." So you design proxy tasks and rubrics, and the question becomes: <em>does your proxy actually measure the thing you named it after?</em> That's construct validity.</p>
+
+        <p>Without it, you're in a world where a model scores 95% on your "deception benchmark" and you have no idea if that means the model is non-deceptive, or just good at the specific prompt format you used. This matters for policy decisions, deployment gates, and safety cases. If the score doesn't mean what you think it means, the decisions built on it are noise.</p>
+
+        <h2>The core problem: high scores that mean nothing</h2>
+
+        <p>The question I keep coming back to: <em>"When an eval gives a score, what is that score evidence for?"</em></p>
+
+        <p>A model can score 95% on a deception benchmark and still not be meaningfully safer. Maybe the prompts were formatted in a way the model is good at parsing. Maybe the rubric measures refusal style instead of actual deceptive behavior. Maybe the dataset only covers one narrow framing of what "deception" means.</p>
+
+        <p>Having spent years building content safety classifiers, I've seen a version of this problem play out at scale: a hate speech model can have high accuracy on your test set and still fail badly on slang, coded language, or cultural context it never saw in training. But at least with classical ML, you can diagnose this. You can look at the confusion matrix, inspect the failure modes, and trace back to training data gaps. The eval-to-reality gap is manageable because the system is deterministic and the task is well-defined.</p>
+
+        <p>With LLM safety evals, the gap is structurally worse. The model's behavior changes with temperature, prompt phrasing, system prompt context, and even the order of examples. The task itself ("is this model safe?") doesn't have a clean mathematical definition. So construct validity isn't just nice-to-have, it's the difference between useful measurement and theater.</p>
+
+        <h2>What construct validity looks like as a checklist</h2>
+
+        <p>I find it useful to think of validity as a pipeline. Each stage checks a different aspect of whether the eval is trustworthy, and you need all of them before a score is decision-usable:</p>
+
+        <div class="mermaid-wrap">
+          <pre class="mermaid">
+flowchart LR
+    A["Define<br/>construct"] --> B["Scope<br/><i>in vs out</i>"]
+    B --> C["Design<br/>evidence"]
+    C --> D["Document<br/>confounds"]
+    D --> E["Statistical<br/>checks"]
+    E --> F["Elicitation<br/>evidence"]
+    F --> G["Content<br/>validity"]
+    G --> H{"Status"}
+    H -->|"gates pass"| I["PASS"]
+    H -->|"red flag"| J["REVIEW"]
+    H -->|"gate fail"| K["FAIL"]
+          </pre>
+        </div>
+
+        <p>What I like about this: each layer is a boolean check. Criterion met = points, not met = 0. No partial credit, no subjective judgment calls at scoring time. You can implement the whole thing as a pure function.</p>
+
+        <h2>The red flag override is the key insight</h2>
+
+        <p>The part that changed how I think about eval quality: <strong>red flags can override an otherwise perfect score</strong>. An eval can score 95/100 on evidence completeness and still land at "review required" because of a single major red flag (e.g., possible overfitting on dev prompts).</p>
+
+        <p>This maps well to how safety systems work in practice. In content moderation, a piece of content can pass every automated check and still get escalated because of one contextual signal. The same logic applies to eval quality: evidence completeness is necessary but not sufficient.</p>
+
+        <h2>Making this generic: what any eval should document</h2>
+
+        <p>Stepping back from any specific framework, I think these are the minimum questions any eval should answer to be taken seriously:</p>
+
+        <div class="mermaid-wrap">
+          <pre class="mermaid">
+flowchart TD
+    A["ANY EVAL"] --> B["What are you claiming to measure?<br/><i>construct card</i>"]
+    A --> C["Why do these items represent that claim?<br/><i>content validity</i>"]
+    A --> D["What else could explain the score?<br/><i>confounds</i>"]
+    A --> E["How did you elicit the behavior?<br/><i>elicitation strategy</i>"]
+    A --> F["Are the numbers coherent?<br/><i>statistical checks</i>"]
+          </pre>
+        </div>
+
+        <p>Most evals I've seen in practice document maybe one or two of these. The construct card (what are we measuring, what's in/out of scope) is almost always missing or implicit. The confounds list is rarer still.</p>
+
+        <h2>Confounds: the uncomfortable part</h2>
+
+        <p>A confound is an alternative explanation for the score. Example: "prompt wording sensitivity - same intent, different wording can shift score." Any serious validity framework requires documenting known confounds alongside mitigations.</p>
+
+        <p>This is uncomfortable because it forces you to admit what your eval might be getting wrong. In practice, teams optimize for the score and don't want to document reasons the score might be misleading. But a good validity contract should award zero points for a confound with no mitigation listed, and only full points when you've both identified the confound and described what you did about it.</p>
+
+        <p>That's a good incentive structure. You don't get credit for ignorance.</p>
+
+        <h2>A minimal validity contract</h2>
+
+        <p>If I were starting an eval from scratch today, this is the minimum I'd want documented before trusting any score it produces:</p>
+
+        <ol>
+          <li><strong>Construct card</strong>: one paragraph defining what you're measuring and, equally important, what you're not. "This eval measures whether the model provides actionable instructions for synthesizing controlled substances. It does not measure general chemistry knowledge or intent."</li>
+          <li><strong>Item justification</strong>: for each test item or category, one sentence on why it belongs. If you can't articulate why a prompt is in your eval, it probably shouldn't be.</li>
+          <li><strong>Confounds list</strong>: at least three alternative explanations for high/low scores, with mitigations. No mitigation = zero credit for that confound.</li>
+          <li><strong>Elicitation disclosure</strong>: how you prompted the model, how many turns, what system prompt, whether you used jailbreaks or persuasion techniques. A model that "passes" under weak elicitation tells you very little.</li>
+          <li><strong>Reproducibility bundle</strong>: model version, dataset hash, scorer version, seeds, config. Everything someone needs to rerun and get the same numbers.</li>
+        </ol>
+
+        <p>This isn't comprehensive. A full validity framework has more layers. But if every eval shipped with just these five things, the field would be in a materially better place than it is now.</p>
+
+        <h2>Reproducibility is harder than it sounds</h2>
+
+        <p>In classical ML, reproducibility is mostly a solved problem. Pin your random seed, version your data, and your model produces the same outputs every time. I could rerun a content safety classifier evaluation six months later and get identical results down to the fourth decimal.</p>
+
+        <p>LLM evals broke this assumption. Even with temperature set to 0, model providers can change quantization, routing, or serving infrastructure between API calls. A model scored at 82% on Monday might score 78% on Wednesday with identical inputs, and neither you nor the provider can fully explain why. Top-p sampling, batching order, and floating-point non-determinism across hardware all contribute. The output is a function of things you don't control and often can't observe.</p>
+
+        <p>This has a practical consequence that's easy to miss: <strong>if you run a safety eval once and report a single number, that number is a sample from a distribution you haven't characterized</strong>. You don't know if 82% is the mean, the ceiling, or an outlier. The fix is simple but almost nobody does it: run the eval multiple times with different seeds and report the spread. Five passes gives you 82% +/- 3%, which is a fundamentally different claim than a bare 82%. It tells you the eval's precision, not just its output.</p>
+
+        <p>Beyond sampling, a <strong>run bundle</strong> captures everything needed to replay an eval: model version, dataset version, scorer version, code commit, random seeds, config flags. Think <code>package-lock.json</code> but for an eval run.</p>
+
+        <div class="mermaid-wrap">
+          <pre class="mermaid">
+flowchart TD
+    A["Run eval"] --> B["Capture run bundle<br/><i>config, hashes, seeds, lineage, logs</i>"]
+    B --> C["Attempt replay"]
+    C -->|"output matches"| D["PASS"]
+    C -->|"output differs"| E["REVIEW REQUIRED<br/><i>something changed, investigate</i>"]
+    C -->|"not attempted"| F["Must provide<br/>reason code"]
+          </pre>
+        </div>
+
+        <p>The useful constraint: a replay mismatch is not a failure, it's a signal. The status becomes "review required" because the point isn't that everything must be deterministic, but that differences must be explainable. If the score changed between Tuesday and Thursday, you need to know whether the model changed, the data changed, or the pipeline drifted. Pinning seeds and reporting confidence intervals from multiple runs makes this kind of debugging possible.</p>
+
+        <h2>Where this leads</h2>
+
+        <p>Both ideas are trying to solve the same meta-problem: <strong>eval scores are only useful if you can trust what they represent</strong>. Construct validity asks "does this score mean what you think it means?" Reproducibility asks "can you prove this score came from where you say it did?"</p>
+
+        <p>The gap in the current AI safety eval ecosystem isn't that we lack benchmarks. It's that we lack standardized ways to assess whether those benchmarks are measuring the right things. A shared validity contract, even a minimal one, would let different teams compare not just scores but the quality of the evidence behind those scores.</p>
+
+        <p>Coming from applied ML where evaluation discipline is mature (versioned datasets, deterministic pipelines, well-defined metrics), the state of LLM safety evals feels like early-stage infrastructure. The models are getting more capable, the evals are multiplying, but the meta-question of "should we trust this eval?" is still largely informal. That's the direction I'm most interested in: not building more evals, but building the tools and standards that make evals trustworthy.</p>
+
+        <h2>Cite this post</h2>
+        <pre class="cite-block">Pawar, R. (2026). Notes on Making AI Evals Actually Measure What They Claim. ratnakarpawar.github.io. https://ratnakarpawar.github.io/pages/blog/notes-on-eval-validity.html</pre>
+
+        <h2>References</h2>
+        <ul class="post-references">
+          <li><a href="https://oxrml.com/measuring-what-matters/index.html" target="_blank" rel="noopener">OxRML - Measuring What Matters</a></li>
+          <li><a href="https://oxrml.com/measuring-what-matters/checklist.html?state=0" target="_blank" rel="noopener">UKAISI / OxRML Checklist</a></li>
+          <li><a href="https://evaluations.metr.org/elicitation-protocol/#fn:4" target="_blank" rel="noopener">METR Elicitation Protocol</a></li>
+          <li><a href="https://www.anthropic.com/research/statistical-approach-to-model-evals" target="_blank" rel="noopener">Anthropic - Statistical Approach to Model Evals</a></li>
+          <li><a href="https://arxiv.org/abs/2411.00640" target="_blank" rel="noopener">Adding Error Bars to Evals (arXiv)</a></li>
+        </ul>
+
+      </div>
+
+    </div>
+  </article>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p class="footer-copy">&copy; 2026 Ratnakar Pawar</p>
+      <div class="footer-links">
+        <a href="../contact.html">Contact</a>
+        <a href="https://linkedin.com/in/ratnakarpawar" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/rpwr021" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const toggle = document.getElementById('nav-toggle');
+    const links = document.getElementById('nav-links');
+    toggle.addEventListener('click', () => {
+      links.classList.toggle('open');
+      toggle.classList.toggle('active');
+    });
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', () => {
+        links.classList.remove('open');
+        toggle.classList.remove('active');
+      });
+    });
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 10);
+    });
+  </script>
+
+</body>
+</html>

@@ -703,30 +703,169 @@ ul {
   line-height: 1.65;
 }
 
-/* ===== Blog Placeholder ===== */
-.blog-placeholder {
-  text-align: center;
-  padding: 3rem 1.5rem;
+/* ===== Blog List ===== */
+.blog-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.blog-card {
+  display: block;
   background: #fff;
   border: 1px solid #E4DDD2;
   border-radius: 6px;
+  padding: 1.5rem;
   box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  transition: box-shadow 0.2s;
+  text-decoration: none;
 }
 
-.blog-placeholder h3 {
+.blog-card:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.04);
+}
+
+.blog-date {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #8B6F4E;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.blog-card h3 {
   font-family: 'Crimson Pro', Georgia, serif;
-  font-size: 1.3rem;
+  font-size: 1.15rem;
   font-weight: 400;
   color: #1a1a1a;
+  margin: 4px 0 8px;
+}
+
+.blog-card p {
+  font-size: 0.88rem;
+  color: #5c5c5c;
+  line-height: 1.65;
+}
+
+/* ===== Blog Post ===== */
+.blog-post {
+  padding: 9rem 0 4rem;
+}
+
+.post-header {
+  margin-bottom: 2.5rem;
+}
+
+.post-date {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #8B6F4E;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.post-header h1 {
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 2.2rem;
+  font-weight: 400;
+  color: #1a1a1a;
+  line-height: 1.25;
   margin-bottom: 10px;
 }
 
-.blog-placeholder p {
-  font-size: 0.95rem;
+.post-subtitle {
+  font-size: 1rem;
   color: #888;
-  max-width: 420px;
-  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.post-body h2 {
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: #1a1a1a;
+  margin: 2.5rem 0 0.8rem;
+}
+
+.post-body p {
+  font-size: 0.95rem;
+  color: #333;
+  line-height: 1.8;
+  margin-bottom: 1.2rem;
+}
+
+.post-body strong {
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.post-body em {
+  color: #5c5c5c;
+}
+
+.post-body code {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.85em;
+  background: rgba(139, 111, 78, 0.08);
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: #6D563D;
+}
+
+.post-body ul {
+  list-style: disc;
+  padding-left: 18px;
+  margin-bottom: 1.2rem;
+}
+
+.post-body li {
+  font-size: 0.95rem;
+  color: #333;
+  line-height: 1.8;
+  margin-bottom: 4px;
+}
+
+.mermaid-wrap {
+  margin: 2rem -4rem;
+  padding: 2rem;
+  background: #FDFBF7;
+  border: 1px solid #E4DDD2;
+  border-radius: 6px;
+}
+
+.mermaid-wrap .mermaid {
+  display: flex;
+  justify-content: center;
+}
+
+.cite-block {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.82rem;
+  color: #5c5c5c;
+  background: #F4EFE6;
+  border: 1px solid #E4DDD2;
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+  white-space: pre-wrap;
+  word-break: break-word;
   line-height: 1.7;
+  margin-top: 0.5rem;
+}
+
+.post-references {
+  list-style: none;
+  padding: 0;
+  margin-top: 1rem;
+}
+
+.post-references li {
+  margin-bottom: 6px;
+}
+
+.post-references a {
+  font-size: 0.88rem;
+  font-weight: 500;
 }
 
 /* ===== Contact Page ===== */
