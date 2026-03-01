@@ -1,11 +1,9 @@
-# Confidential documents
-*.pdf
-*.docx
-*.txt
+# Reference documents (confidential)
+docs/
 
 # System files
 .DS_Store
 .claude/
 
 # Original photo
-photo_o.jpg
+assets/photo_o.jpg
