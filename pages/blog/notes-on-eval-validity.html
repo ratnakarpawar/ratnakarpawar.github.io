@@ -41,23 +41,23 @@
 
       <div class="post-body">
 
-        <p>I've been thinking about what makes an AI safety evaluation trustworthy. Not whether a model passes or fails a benchmark, but whether the score actually means what we think it means. The thesis I keep arriving at: <strong>scores are only as good as the validity argument behind them</strong>. In measurement science, <strong>validity</strong> means justified score meaning plus justified use. The <em>Standards for Educational and Psychological Testing</em> and Messick's unified validity framework both ground it this way. Here's why this matters for AI safety.</p>
+        <p>I've been thinking about what makes an AI safety evaluation trustworthy. Not whether a model passes or fails a benchmark, but whether the score actually means what we think it means. The thesis I keep arriving at: <strong>scores are only as good as the validity argument behind them</strong>. In measurement science, <strong>validity</strong> means justified score meaning plus justified use. A score without a validity argument is just a number. Here's why this matters for AI safety.</p>
 
         <h2>Why construct validity matters</h2>
 
-        <p>In traditional ML, evaluation can feel straightforward: you have a test set, you measure accuracy or F1, and the metric maps to what you care about. For many offline supervised evals with pinned artifacts (fixed datasets, deterministic models, well-defined label spaces), the metric-to-reality gap is small enough to manage. A spam classifier with 99% precision on held-out data is probably good at catching spam, provided the held-out distribution matches production.</p>
+        <p>In traditional ML, evaluation can feel straightforward. You have a test set, you measure accuracy or F1, and the metric maps to what you care about. For many offline supervised evals with pinned artifacts (fixed datasets, deterministic models, well-defined label spaces), the gap between metric and reality is small enough to manage. A spam classifier with 99% precision on held-out data is probably good at catching spam, provided the held-out distribution matches production.</p>
 
-        <p>LLM safety evals don't work like that. The thing you're trying to measure ("is this model deceptive?", "will it help with bioweapons?", "does it comply with policy?") is abstract, contested, and context-dependent. There's no ground-truth label set for "deceptiveness." So you design proxy tasks and rubrics, and the question becomes: <em>does your proxy actually measure the thing you named it after?</em> That's <strong>construct validity</strong>.</p>
+        <p>LLM safety evals don't work like that. The things you're trying to measure ("is this model deceptive?", "will it help with bioweapons?", "does it comply with policy?") are abstract, contested, and context-dependent. There's no ground-truth label set for "deceptiveness." So you design proxy tasks and rubrics, and the real question becomes: <em>does your proxy actually measure the thing you named it after?</em> That's <strong>construct validity</strong>.</p>
 
-        <p>To make this concrete, here's what proxies look like in the wild. To measure "deception," an eval might present the model with a scenario where lying would help it achieve a goal, then check whether the model's response contains false statements. To measure "bioweapons risk," the proxy might be a set of chemistry questions where a correct, detailed answer is scored as dangerous. To measure "compliance," the eval might fire a batch of policy-violating prompts and count refusal rates. Each of these is a reasonable starting point, but none of them <em>is</em> the thing it claims to measure. The deception proxy might just be measuring whether the model is bad at role-play. The bioweapons proxy might penalize legitimate chemistry knowledge. The compliance proxy might reward models that refuse everything, including benign requests. The gap between the proxy and the construct is exactly where validity analysis lives.</p>
+        <p>Here's what proxies look like in the wild. To measure "deception," an eval might present the model with a scenario where lying would help it achieve a goal, then check whether the response contains false statements. To measure "bioweapons risk," the proxy might be a set of chemistry questions where a correct, detailed answer is scored as dangerous. To measure "compliance," the eval might fire a batch of policy-violating prompts and count refusal rates. Each is a reasonable starting point, but none of them <em>is</em> the thing it claims to measure. The deception proxy might just be measuring whether the model is bad at role-play. The bioweapons proxy might penalize legitimate chemistry knowledge. The compliance proxy might reward models that refuse everything, including benign requests.</p>
 
-        <p>Having spent years building content safety classifiers, I've seen a version of this problem at scale: a hate speech model can have high accuracy on your test set and still fail badly on slang, coded language, or cultural context it never saw in training. But at least with classical ML, you can diagnose this. Confusion matrices, failure-mode inspection, tracing back to training data gaps. For many offline supervised evals with pinned artifacts, the eval-to-reality gap is manageable. But it's not universally solved: distributed training nondeterminism, hardware variance, and data drift all erode that tractability.</p>
+        <p>Having spent years building content safety classifiers, I've seen this play out at scale. A hate speech model can have high accuracy on your test set and still fail badly on slang, coded language, or cultural context it never saw in training. At least with classical ML, you can diagnose this: confusion matrices, failure-mode inspection, tracing back to training data gaps. For many offline supervised evals with pinned artifacts, the eval-to-reality gap is manageable. But it's not universally solved. Distributed training nondeterminism, hardware variance, and data drift all erode that tractability.</p>
 
-        <p>With LLM safety evals, the gap is structurally worse. The model's behavior changes with temperature, prompt phrasing, system prompt context, and even the order of examples. The task itself ("is this model safe?") doesn't have a clean mathematical definition. So construct validity isn't just nice-to-have. It's the difference between useful measurement and theater.</p>
+        <p>With LLM safety evals, the gap is structurally worse. Behavior changes with temperature, prompt phrasing, system prompt context, even the order of examples. The task itself ("is this model safe?") doesn't have a clean mathematical definition. Construct validity isn't a nice-to-have. It's the difference between useful measurement and theater.</p>
 
         <h2>The eval-as-measurement pipeline</h2>
 
-        <p>I find it useful to think of validity as a pipeline where each stage is a gate. Every gate checks a different aspect of whether the eval is trustworthy, and you need all of them to pass before a score is decision-usable:</p>
+        <p>I find it useful to think of validity as a pipeline. Each stage is a gate, checking a different aspect of whether the eval is trustworthy. You need all of them to pass before a score is decision-usable:</p>
 
         <div class="diagram-wrap">
           <div class="pipeline">
@@ -86,7 +86,7 @@
           </div>
         </div>
 
-        <p>What I like about this: each layer is a boolean check. Criterion met = points, not met = 0. No partial credit, no subjective judgment calls at scoring time. You can implement the whole thing as a pure function.</p>
+        <p>What I like about this: each gate is a boolean. Criterion met = points, not met = zero. No partial credit, no subjective calls at scoring time. You could implement the whole thing as a pure function.</p>
 
         <h2>Red flags that override everything</h2>
 
@@ -127,9 +127,7 @@
 
         <p>A confound is an alternative explanation for the score. Example: "prompt wording sensitivity - same intent, different wording can shift score." Any serious validity framework requires documenting known confounds alongside mitigations.</p>
 
-        <p>This is uncomfortable because it forces you to admit what your eval might be getting wrong. In practice, teams optimize for the score and don't want to document reasons the score might be misleading. But a good validity contract should award zero points for a confound with no mitigation listed, and only full points when you've both identified the confound and described what you did about it.</p>
-
-        <p>That's a good incentive structure. You don't get credit for ignorance.</p>
+        <p>This is uncomfortable because it forces you to admit what your eval might be getting wrong. Teams optimize for the score and don't want to document reasons it might be misleading. But a good validity contract awards zero points for a confound with no mitigation, and full points only when you've both identified the confound and described what you did about it. You don't get credit for ignorance.</p>
 
         <h2>A minimal validity contract</h2>
 
@@ -149,17 +147,17 @@
 
         <h2>Reproducibility: three levels</h2>
 
-        <p>I've come to think of reproducibility not as a binary property but as three distinct levels, each progressively harder to achieve:</p>
+        <p>Reproducibility isn't binary. I think of it as three levels, each progressively harder:</p>
 
-        <p><strong>Level 1: Repeatability.</strong> Same code, same machine, same seeds → identical output. For many offline supervised evals with pinned artifacts, this is straightforward. Pin your random seed, version your data, and the pipeline produces the same numbers every time. I could rerun a content safety classifier evaluation six months later and get identical results down to the fourth decimal.</p>
+        <p><strong>Level 1: Repeatability.</strong> Same code, same machine, same seeds → identical output. For offline supervised evals with pinned artifacts, this is straightforward. Pin your seed, version your data, and the pipeline gives you the same numbers every time. I could rerun a content safety classifier eval six months later and match results to the fourth decimal.</p>
 
-        <p><strong>Level 2: Independent rerun.</strong> Different machine, different time, same config → scores within a confidence interval. This is where LLM evals start to struggle. Even with temperature set to 0, floating-point non-determinism across hardware, batching order, and top-p sampling all introduce variance. A model scored at 82% on Monday might score 79% on Wednesday with identical inputs.</p>
+        <p><strong>Level 2: Independent rerun.</strong> Different machine, different time, same config → scores within a confidence interval. This is where LLM evals start to struggle. Even with temperature at zero, floating-point non-determinism across hardware, batching order, and top-p sampling all introduce variance. A model scored at 82% on Monday might score 79% on Wednesday with identical inputs.</p>
 
-        <p><strong>Level 3: Comparability over time.</strong> Model API drift, version changes, infrastructure updates → regression monitoring. This is the hardest level and the one most teams skip entirely.</p>
+        <p><strong>Level 3: Comparability over time.</strong> Model API drift, version changes, infrastructure updates → you need regression monitoring. This is the hardest level, and the one most teams skip entirely.</p>
 
-        <p>For many offline supervised evals with pinned artifacts, repeatability is straightforward. But distributed training nondeterminism, hardware variance, and data drift mean it's not universally solved, just more tractable than the LLM case.</p>
+        <p>For offline supervised evals with pinned artifacts, repeatability is tractable. But distributed training nondeterminism, hardware variance, and data drift mean it's not universally solved. It's just easier than the LLM case.</p>
 
-        <p>A <strong>run bundle</strong> captures everything needed to replay an eval: model version, dataset version, scorer version, code commit, random seeds, config flags. Think <code>package-lock.json</code> but for an eval run.</p>
+        <p>A <strong>run bundle</strong> captures everything needed to replay an eval: model version, dataset version, scorer version, code commit, random seeds, config flags. A lockfile for your evaluation, pinning every moving part so that "rerun" actually means something.</p>
 
         <div class="diagram-wrap">
           <div class="flow-vertical">
@@ -191,19 +189,19 @@
 
         <p>Models served via API can change silently: requantization, routing changes, safety-layer updates, even full model swaps behind a stable version string. This is Level 3 reproducibility, and most teams have no infrastructure for it.</p>
 
-        <p>My recommendation: run periodic re-evals on a fixed <strong>canary set</strong> (a small, stable subset of your eval), track score distributions over time, and alert on shifts beyond your expected confidence interval. If your canary set drifts by more than 2× SEM without a known model update, something changed that you need to investigate. This is basic regression monitoring, the kind of thing any production ML system would have, but it's almost nonexistent in the eval ecosystem.</p>
+        <p>The fix: run periodic re-evals on a fixed <strong>canary set</strong> (a small, stable subset of your eval), track score distributions over time, and alert on shifts beyond your expected confidence interval. If your canary drifts by more than 2× SEM without a known model update, something changed and you need to investigate. This is basic regression monitoring. It's almost nonexistent in the eval ecosystem.</p>
 
         <h2>Statistics: making scores meaningful</h2>
 
-        <p>A bare score is an estimate, not a fact. Treat eval questions as samples from a "question universe" and the score as a statistic with uncertainty around it. Several concepts from the measurement literature (and Anthropic's recent statistical eval paper) are directly applicable:</p>
+        <p>A bare score is an estimate, not a fact. Your eval questions are a sample from a larger universe of possible questions, and the score is a statistic with uncertainty around it. A few concepts make that uncertainty visible:</p>
 
-        <p><strong>SEM and confidence intervals.</strong> The <strong>standard error of the mean</strong> quantifies how much your score would vary if you drew a different sample of questions from the same universe. For a binary eval (correct/incorrect), report ±1.96 × SEM for a 95% confidence interval. This turns "82%" into "82% ± 5.3%," which is a fundamentally different claim.</p>
+        <p><strong>SEM and confidence intervals.</strong> The <strong>standard error of the mean</strong> tells you how much your score would vary if you drew a different sample of questions. For a binary eval (correct/incorrect), report ±1.96 × SEM for a 95% confidence interval. This turns "82%" into "82% ± 5.3%," which is a fundamentally different claim.</p>
 
-        <p><strong>Clustering.</strong> Many evals have non-independent questions: multi-turn conversations, questions about the same passage, items from the same topic cluster. Treating these as independent underestimates uncertainty. <strong>Clustered standard errors</strong> account for within-group correlation and can be 3× larger than naive SEs. If your eval has any grouping structure, ignoring it means your confidence intervals are lying to you.</p>
+        <p><strong>Clustering.</strong> Many evals have non-independent questions: multi-turn conversations, questions about the same passage, items from the same topic cluster. Treating these as independent underestimates uncertainty. <strong>Clustered standard errors</strong> account for within-group correlation and can be 3× larger than naive SEs. If your eval has grouping structure and you ignore it, your confidence intervals are lying to you.</p>
 
-        <p><strong>Paired differences.</strong> When comparing two models, use paired comparisons on identical questions rather than two independent samples. This eliminates question-difficulty variance (some questions are just harder) and gives you much tighter estimates of the actual performance difference.</p>
+        <p><strong>Paired differences.</strong> When comparing two models, use paired comparisons on identical questions rather than two independent samples. This eliminates question-difficulty variance (some questions are just harder) and gives much tighter estimates of the actual performance gap.</p>
 
-        <p><strong>Variance reduction.</strong> For stochastic models, resample chain-of-thought multiple times per question and use question-level averages. This reduces noise from sampling variance and gives a more stable estimate of the model's "true" performance on each item.</p>
+        <p><strong>Variance reduction.</strong> For stochastic models, resample chain-of-thought multiple times per question and average at the question level. This reduces sampling noise and gives a more stable estimate of what the model actually does on each item.</p>
 
         <h3>Worked example: what "82%" actually means</h3>
 
@@ -227,7 +225,7 @@
           <li><strong>Comparability:</strong> valid for comparisons within the same model family and API version. Cross-family comparisons require re-validation of prompt format assumptions.</li>
         </ul>
 
-        <p>None of this is exotic methodology. It's the kind of documentation any measurement scientist would expect. The gap is that almost no AI eval ships with it.</p>
+        <p>None of this is exotic methodology. It's basic measurement hygiene. The gap is that almost no AI eval ships with it.</p>
 
         <h2>What trustworthy evals look like institutionally</h2>
 
@@ -236,12 +234,12 @@
         <ul>
           <li><strong>Shared validity contracts</strong> as a field norm, not optional, not aspirational, but expected in every eval release.</li>
           <li><strong>Eval registries</strong> with construct cards and confound lists, so teams can compare not just scores but the quality of evidence behind those scores.</li>
-          <li><strong>Standardized run bundles</strong> for reproducibility, the way <code>package-lock.json</code> standardized dependency pinning.</li>
+          <li><strong>Standardized run bundles</strong> for reproducibility, so "rerun this eval" is a single command, not an archaeology project.</li>
           <li><strong>Statistical reporting standards</strong> (confidence intervals, clustering adjustments, paired differences) as default practice, not afterthought.</li>
           <li><strong>Regression monitoring</strong> for API-served models, with canary sets and automated drift alerts.</li>
         </ul>
 
-        <p>Coming from applied ML where evaluation discipline is mature, the state of LLM safety evals feels like early-stage infrastructure. The models are getting more capable, the evals are multiplying, but the meta-question of "should we trust this eval?" is still largely informal. The direction I'm most interested in: not building more evals, but building the infrastructure that makes evals trustworthy.</p>
+        <p>The models are getting more capable. The evals are multiplying. But the meta-question, "should we trust this eval?", is still largely informal. The direction I'm most interested in: not building more evals, but building the infrastructure that makes evals trustworthy.</p>
 
         <h2>Cite this post</h2>
         <pre class="cite-block">Pawar, R. (2026). Notes on Making AI Evals Actually Measure What They Claim. ratnakarpawar.github.io. https://ratnakarpawar.github.io/pages/blog/notes-on-eval-validity.html</pre>
@@ -253,7 +251,6 @@
           <li><a href="https://evaluations.metr.org/elicitation-protocol/#fn:4" target="_blank" rel="noopener">METR Elicitation Protocol</a></li>
           <li><a href="https://www.anthropic.com/research/statistical-approach-to-model-evals" target="_blank" rel="noopener">Anthropic - Statistical Approach to Model Evals</a></li>
           <li><a href="https://arxiv.org/abs/2411.00640" target="_blank" rel="noopener">Adding Error Bars to Evals (arXiv)</a></li>
-          <li>Messick, S. (1989). Validity. In R. L. Linn (Ed.), <em>Educational Measurement</em> (3rd ed., pp. 13–103). American Council on Education / Macmillan.</li>
           <li>Cronbach, L. J., &amp; Meehl, P. E. (1955). Construct validity in psychological tests. <em>Psychological Bulletin</em>, 52(4), 281–302.</li>
         </ul>
 
