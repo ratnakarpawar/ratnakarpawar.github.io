@@ -9,30 +9,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../style.css">
-  <script type="module">
-    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-    mermaid.initialize({
-      startOnLoad: true,
-      securityLevel: 'loose',
-      theme: 'base',
-      flowchart: {
-        nodeSpacing: 40,
-        rankSpacing: 60,
-        padding: 20,
-        useMaxWidth: true
-      },
-      themeVariables: {
-        primaryColor: '#F4EFE6',
-        primaryBorderColor: '#E4DDD2',
-        primaryTextColor: '#1a1a1a',
-        lineColor: '#8B6F4E',
-        secondaryColor: '#fff',
-        tertiaryColor: '#FDFBF7',
-        fontFamily: 'Inter, sans-serif',
-        fontSize: '29px'
-      }
-    });
-  </script>
 </head>
 <body>
 
@@ -73,6 +49,8 @@
 
         <p>LLM safety evals don't work like that. The thing you're trying to measure ("is this model deceptive?", "will it help with bioweapons?", "does it comply with policy?") is abstract, contested, and context-dependent. There's no ground-truth label set for "deceptiveness." So you design proxy tasks and rubrics, and the question becomes: <em>does your proxy actually measure the thing you named it after?</em> That's construct validity.</p>
 
+        <p>To make this concrete, here's what proxies look like in the wild. To measure "deception," an eval might present the model with a scenario where lying would help it achieve a goal, then check whether the model's response contains false statements. To measure "bioweapons risk," the proxy might be a set of chemistry questions where a correct, detailed answer is scored as dangerous. To measure "compliance," the eval might fire a batch of policy-violating prompts and count refusal rates. Each of these is a reasonable starting point, but none of them <em>is</em> the thing it claims to measure. The deception proxy might just be measuring whether the model is bad at role-play. The bioweapons proxy might penalize legitimate chemistry knowledge. The compliance proxy might reward models that refuse everything, including benign requests. The gap between the proxy and the construct is exactly where validity analysis lives.</p>
+
         <p>Without it, you're in a world where a model scores 95% on your "deception benchmark" and you have no idea if that means the model is non-deceptive, or just good at the specific prompt format you used. This matters for policy decisions, deployment gates, and safety cases. If the score doesn't mean what you think it means, the decisions built on it are noise.</p>
 
         <h2>The core problem: high scores that mean nothing</h2>
@@ -89,20 +67,31 @@
 
         <p>I find it useful to think of validity as a pipeline. Each stage checks a different aspect of whether the eval is trustworthy, and you need all of them before a score is decision-usable:</p>
 
-        <div class="mermaid-wrap">
-          <pre class="mermaid">
-flowchart LR
-    A["Define<br/>construct"] --> B["Scope<br/><i>in vs out</i>"]
-    B --> C["Design<br/>evidence"]
-    C --> D["Document<br/>confounds"]
-    D --> E["Statistical<br/>checks"]
-    E --> F["Elicitation<br/>evidence"]
-    F --> G["Content<br/>validity"]
-    G --> H{"Status"}
-    H -->|"gates pass"| I["PASS"]
-    H -->|"red flag"| J["REVIEW"]
-    H -->|"gate fail"| K["FAIL"]
-          </pre>
+        <div class="diagram-wrap">
+          <div class="pipeline">
+            <div class="pipeline-node">Define<br>construct</div>
+            <div class="pipeline-arrow"></div>
+            <div class="pipeline-node">Scope<br><span class="node-sub">in vs out</span></div>
+            <div class="pipeline-arrow"></div>
+            <div class="pipeline-node">Design<br>evidence</div>
+            <div class="pipeline-arrow"></div>
+            <div class="pipeline-node">Document<br>confounds</div>
+            <div class="pipeline-arrow"></div>
+            <div class="pipeline-node">Statistical<br>checks</div>
+            <div class="pipeline-arrow"></div>
+            <div class="pipeline-node">Elicitation<br>evidence</div>
+            <div class="pipeline-arrow"></div>
+            <div class="pipeline-node">Content<br>validity</div>
+            <div class="pipeline-arrow"></div>
+            <div class="pipeline-node pipeline-node-decision">Status</div>
+          </div>
+          <div class="pipeline-stem"></div>
+          <div class="pipeline-rail"></div>
+          <div class="pipeline-outcomes">
+            <span class="pipeline-badge badge-pass">PASS<span class="badge-sub">gates pass</span></span>
+            <span class="pipeline-badge badge-review">REVIEW<span class="badge-sub">red flag</span></span>
+            <span class="pipeline-badge badge-fail">FAIL<span class="badge-sub">gate fail</span></span>
+          </div>
         </div>
 
         <p>What I like about this: each layer is a boolean check. Criterion met = points, not met = 0. No partial credit, no subjective judgment calls at scoring time. You can implement the whole thing as a pure function.</p>
@@ -117,15 +106,19 @@ flowchart LR
 
         <p>Stepping back from any specific framework, I think these are the minimum questions any eval should answer to be taken seriously:</p>
 
-        <div class="mermaid-wrap">
-          <pre class="mermaid">
-flowchart TD
-    A["ANY EVAL"] --> B["What are you claiming to measure?<br/><i>construct card</i>"]
-    A --> C["Why do these items represent that claim?<br/><i>content validity</i>"]
-    A --> D["What else could explain the score?<br/><i>confounds</i>"]
-    A --> E["How did you elicit the behavior?<br/><i>elicitation strategy</i>"]
-    A --> F["Are the numbers coherent?<br/><i>statistical checks</i>"]
-          </pre>
+        <div class="diagram-wrap">
+          <div class="question-hub">
+            <div class="hub-label">ANY EVAL</div>
+            <div class="hub-stem"></div>
+            <div class="hub-rail"></div>
+            <div class="hub-cards">
+              <div class="hub-card">What are you claiming to measure?<span class="hub-card-sub">construct card</span></div>
+              <div class="hub-card">Why do these items represent that claim?<span class="hub-card-sub">content validity</span></div>
+              <div class="hub-card">What else could explain the score?<span class="hub-card-sub">confounds</span></div>
+              <div class="hub-card">How did you elicit the behavior?<span class="hub-card-sub">elicitation strategy</span></div>
+              <div class="hub-card">Are the numbers coherent?<span class="hub-card-sub">statistical checks</span></div>
+            </div>
+          </div>
         </div>
 
         <p>Most evals I've seen in practice document maybe one or two of these. The construct card (what are we measuring, what's in/out of scope) is almost always missing or implicit. The confounds list is rarer still.</p>
@@ -162,15 +155,28 @@ flowchart TD
 
         <p>Beyond sampling, a <strong>run bundle</strong> captures everything needed to replay an eval: model version, dataset version, scorer version, code commit, random seeds, config flags. Think <code>package-lock.json</code> but for an eval run.</p>
 
-        <div class="mermaid-wrap">
-          <pre class="mermaid">
-flowchart TD
-    A["Run eval"] --> B["Capture run bundle<br/><i>config, hashes, seeds, lineage, logs</i>"]
-    B --> C["Attempt replay"]
-    C -->|"output matches"| D["PASS"]
-    C -->|"output differs"| E["REVIEW REQUIRED<br/><i>something changed, investigate</i>"]
-    C -->|"not attempted"| F["Must provide<br/>reason code"]
-          </pre>
+        <div class="diagram-wrap">
+          <div class="flow-vertical">
+            <div class="flow-node">Run eval</div>
+            <div class="flow-connector"></div>
+            <div class="flow-node">Capture run bundle<span class="node-sub">config, hashes, seeds, lineage, logs</span></div>
+            <div class="flow-connector"></div>
+            <div class="flow-node flow-node-decision">Attempt replay</div>
+            <div class="flow-branch-group">
+              <div class="flow-branch">
+                <div class="flow-branch-label">output matches</div>
+                <span class="pipeline-badge badge-pass">PASS</span>
+              </div>
+              <div class="flow-branch">
+                <div class="flow-branch-label">output differs</div>
+                <span class="pipeline-badge badge-review">REVIEW REQUIRED<span class="badge-sub">something changed, investigate</span></span>
+              </div>
+              <div class="flow-branch">
+                <div class="flow-branch-label">not attempted</div>
+                <span class="pipeline-badge badge-fail">Must provide<span class="badge-sub">reason code</span></span>
+              </div>
+            </div>
+          </div>
         </div>
 
         <p>The useful constraint: a replay mismatch is not a failure, it's a signal. The status becomes "review required" because the point isn't that everything must be deterministic, but that differences must be explainable. If the score changed between Tuesday and Thursday, you need to know whether the model changed, the data changed, or the pipeline drifted. Pinning seeds and reporting confidence intervals from multiple runs makes this kind of debugging possible.</p>

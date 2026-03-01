@@ -826,17 +826,396 @@ ul {
   margin-bottom: 4px;
 }
 
-.mermaid-wrap {
+/* ===== Diagrams ===== */
+.diagram-wrap {
   margin: 2rem -4rem;
   padding: 2rem;
   background: #FDFBF7;
   border: 1px solid #E4DDD2;
   border-radius: 6px;
+  overflow-x: auto;
 }
 
-.mermaid-wrap .mermaid {
+.node-sub {
+  display: block;
+  font-size: 0.78rem;
+  font-style: italic;
+  color: #5c5c5c;
+  font-weight: 400;
+}
+
+/* -- Diagram 1: Pipeline -- */
+.pipeline {
   display: flex;
+  align-items: center;
+  gap: 0;
   justify-content: center;
+  flex-wrap: wrap;
+  row-gap: 12px;
+}
+
+.pipeline-node {
+  background: #fff;
+  border: 1px solid #E4DDD2;
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #1a1a1a;
+  text-align: center;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.pipeline-node-decision {
+  background: #F4EFE6;
+  font-weight: 600;
+  border-color: #8B6F4E;
+}
+
+.pipeline-arrow {
+  width: 28px;
+  height: 2px;
+  background: #8B6F4E;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.pipeline-arrow::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 5px solid transparent;
+  border-left: 6px solid #8B6F4E;
+}
+
+.pipeline-stem {
+  width: 2px;
+  height: 20px;
+  background: #8B6F4E;
+  margin: 0 auto;
+}
+
+.pipeline-rail {
+  position: relative;
+  height: 2px;
+  margin: 0 calc(100% / 6);
+  background: #8B6F4E;
+}
+
+.pipeline-outcomes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.pipeline-outcomes .pipeline-badge {
+  position: relative;
+}
+
+.pipeline-outcomes .pipeline-badge::before {
+  content: "";
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 18px;
+  background: #8B6F4E;
+}
+
+.pipeline-badge {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.badge-sub {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 400;
+  opacity: 0.8;
+  margin-top: 2px;
+}
+
+.badge-pass {
+  background: rgba(22, 101, 52, 0.1);
+  color: #166534;
+  border: 1px solid rgba(22, 101, 52, 0.2);
+}
+
+.badge-review {
+  background: rgba(139, 111, 78, 0.1);
+  color: #8B6F4E;
+  border: 1px solid rgba(139, 111, 78, 0.2);
+}
+
+.badge-fail {
+  background: rgba(180, 60, 60, 0.1);
+  color: #9B3030;
+  border: 1px solid rgba(180, 60, 60, 0.2);
+}
+
+/* -- Diagram 2: Question Hub -- */
+.question-hub {
+  text-align: center;
+}
+
+.hub-label {
+  display: inline-block;
+  background: #F4EFE6;
+  border: 1px solid #8B6F4E;
+  border-radius: 6px;
+  padding: 10px 28px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 0;
+  position: relative;
+}
+
+.hub-stem {
+  width: 2px;
+  height: 20px;
+  background: #8B6F4E;
+  margin: 0 auto;
+}
+
+.hub-rail {
+  position: relative;
+  height: 2px;
+  margin: 0 calc(100% / 10);
+  background: #8B6F4E;
+}
+
+.hub-cards {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.hub-card {
+  background: #fff;
+  border: 1px solid #E4DDD2;
+  border-radius: 6px;
+  padding: 14px 16px;
+  font-size: 0.85rem;
+  color: #1a1a1a;
+  line-height: 1.5;
+  text-align: left;
+  position: relative;
+}
+
+.hub-card::before {
+  content: "";
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 18px;
+  background: #8B6F4E;
+}
+
+.hub-card-sub {
+  display: block;
+  font-size: 0.78rem;
+  font-style: italic;
+  color: #8B6F4E;
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+/* -- Diagram 3: Vertical Flow -- */
+.flow-vertical {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.flow-node {
+  background: #fff;
+  border: 1px solid #E4DDD2;
+  border-radius: 6px;
+  padding: 12px 24px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #1a1a1a;
+  text-align: center;
+  line-height: 1.5;
+  max-width: 360px;
+}
+
+.flow-node-decision {
+  background: #F4EFE6;
+  font-weight: 600;
+  border-color: #8B6F4E;
+}
+
+.flow-connector {
+  width: 2px;
+  height: 24px;
+  background: #8B6F4E;
+  position: relative;
+}
+
+.flow-connector::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top: 6px solid #8B6F4E;
+}
+
+.flow-branch-group {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  width: 100%;
+  margin-top: 40px;
+  padding-top: 24px;
+}
+
+/* vertical stem from decision node down to the horizontal rail */
+.flow-branch-group::before {
+  content: "";
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 40px;
+  background: #8B6F4E;
+}
+
+/* horizontal rail connecting the three branches */
+.flow-branch-group::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: calc(100% / 6);
+  right: calc(100% / 6);
+  height: 2px;
+  background: #8B6F4E;
+}
+
+.flow-branch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+
+/* vertical drop from rail to each branch */
+.flow-branch::before {
+  content: "";
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 24px;
+  background: #8B6F4E;
+}
+
+.flow-branch-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #5c5c5c;
+  font-style: italic;
+}
+
+/* -- Diagram Responsive -- */
+@media (max-width: 700px) {
+  .diagram-wrap {
+    margin: 2rem -1rem;
+    padding: 1.25rem;
+  }
+
+  .pipeline {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pipeline-node {
+    white-space: normal;
+  }
+
+  .pipeline-arrow {
+    width: 2px;
+    height: 20px;
+    margin: 0 auto;
+  }
+
+  .pipeline-arrow::after {
+    right: auto;
+    top: auto;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top: 6px solid #8B6F4E;
+    border-left-color: transparent;
+  }
+
+  .pipeline-rail,
+  .hub-rail {
+    margin: 0;
+  }
+
+  .pipeline-outcomes {
+    grid-template-columns: 1fr;
+  }
+
+  .pipeline-outcomes .pipeline-badge::before {
+    display: none;
+  }
+
+  .hub-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .hub-rail {
+    display: none;
+  }
+
+  .hub-card::before {
+    display: none;
+  }
+
+  .flow-branch-group {
+    grid-template-columns: 1fr;
+    margin-top: 24px;
+    padding-top: 0;
+  }
+
+  .flow-branch-group::before {
+    top: -24px;
+    height: 24px;
+  }
+
+  .flow-branch-group::after {
+    display: none;
+  }
+
+  .flow-branch::before {
+    display: none;
+  }
 }
 
 .cite-block {
