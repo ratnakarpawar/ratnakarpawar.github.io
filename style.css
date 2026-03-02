@@ -199,6 +199,20 @@ ul {
   border-radius: 20px;
 }
 
+.hero-writing {
+  margin-bottom: 20px;
+}
+
+.hero-writing a {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #8B6F4E;
+}
+
+.hero-writing a:hover {
+  color: #6D563D;
+}
+
 .hero-links {
   display: flex;
   gap: 12px;
