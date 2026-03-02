@@ -40,9 +40,9 @@
           the Trust & Safety ML team, building content moderation, child protection, and proactive
           intervention systems serving hundreds of millions of users. That work taught me what
           production safety requires: multi-stage oversight pipelines, policy-grounded evaluation,
-          and measurement frameworks that hold up under distributional shift. Now I'm applying those
-          lessons to frontier model evaluation and red teaming through research with SPAR and AI
-          Safety Camp.
+          and measurement frameworks that hold up under distributional shift. Now I'm building and
+          studying practical guardrails: eval validity, red teaming methodology, and interventions
+          that measurably reduce harm in production.
         </p>
         <div class="focus-tags">
           <span>Safety Evals</span>
@@ -103,7 +103,7 @@
               <li>Built PlayStation's Trust & Safety ML function from the ground up as first engineer, growing the team to 8. Owned the full lifecycle: product scoping, HITL data pipelines, model training, and production inference serving hundreds of millions of users</li>
               <li>Designed and deployed <a href="https://sonyinteractive.com/en/news/blog/encouraging-positive-player-experiences-with-limited-trial-feature/" target="_blank" rel="noopener">proactive intervention systems</a>: safeguards that flag harmful content before it's sent, giving users a chance to self-correct. Roughly 30% of flagged messages were edited or deleted, with harmful message rates dropping 11-15% versus control</li>
               <li>Architected multimodal and voice safety systems, including audio-native toxicity classifiers and combined text/<a href="https://sonyinteractive.com/en/news/blog/playstation-celebrates-safer-internet-day-2026/" target="_blank" rel="noopener">image detection</a> for content policy enforcement at scale</li>
-              <li>Built a multi-stage child safety pipeline: candidate generation, encoder classifiers, LLM policy evaluator, and human-in-the-loop escalation to NCMEC. 250+ grooming cases submitted to authorities, with internal models trending roughly 10x validity versus best vendor. Collaborating with ROOST on open child safety model weights</li>
+              <li>Built multi-stage pipelines for rare-event detection, surfacing roughly 100 actionable cases per 1B interactions: candidate generation, encoder classifiers, LLM-based policy evaluation, and human-in-the-loop escalation. Applied to child safety with 10x improvement in valid case rate compared to existing vendor solutions, and expanding to self-harm detection. Collaborating with ROOST on open child safety model weights</li>
               <li>Established measurement frameworks for distributional robustness and demographic fairness in safety classifiers. Used LLM-based synthetic data generation to diagnose and correct measurement bias in high-risk content moderation models. <a href="https://www.techpolicy.press/researchers-explore-the-use-of-llms-for-content-moderation/" target="_blank" rel="noopener">Presented at Stanford TSRC</a></li>
               <li>Built LLM-powered policy adaptation tools with evaluation pipelines (test datasets, scoring rubrics, failure-mode analysis) and established production inference infrastructure: model compilation, batching optimization, and Kubernetes orchestration</li>
             </ul>
