@@ -41,13 +41,13 @@
 
       <div class="post-body">
 
-        <p>I've been thinking about what makes an AI safety evaluation trustworthy. Not whether a model passes or fails a benchmark, but whether the score actually means what we think it means. The thesis I keep arriving at: <strong>scores are only as good as the validity argument behind them</strong>. In measurement science, <strong>validity</strong> means justified score meaning plus justified use. A score without a validity argument is just a number.</p>
+        <p>I've been thinking about what makes an AI safety evaluation trustworthy. Not whether a model passes or fails a benchmark, but whether the score actually means what we think it means. The thesis I keep arriving at: <strong>scores are only as good as the validity argument behind them</strong>. In measurement science, validity means justified score meaning plus justified use. A score without a validity argument is just a number.</p>
 
         <h2>Why construct validity matters</h2>
 
         <p>In traditional ML, evaluation can feel straightforward. You have a test set, you measure accuracy or F1, and the metric maps to what you care about. For many offline supervised evals with pinned artifacts (fixed datasets, deterministic models, well-defined label spaces), the gap between metric and reality is small enough to manage. A spam classifier with 99% precision on held-out data is probably good at catching spam, provided the held-out distribution matches production.</p>
 
-        <p>LLM safety evals don't work like that. The things you're trying to measure ("is this model deceptive?", "will it help with bioweapons?", "does it comply with policy?") are abstract, contested, and context-dependent. There's no ground-truth label set for "deceptiveness." So you design proxy tasks and rubrics, and the real question becomes: <em>does your proxy actually measure the thing you named it after?</em> That's <strong>construct validity</strong>.</p>
+        <p>LLM safety evals don't work like that. The things you're trying to measure ("is this model deceptive?", "will it help with bioweapons?", "does it comply with policy?") are abstract, contested, and context-dependent. There's no ground-truth label set for "deceptiveness." So you design proxy tasks and rubrics, and the real question becomes: <em>does your proxy actually measure the thing you named it after?</em> That's construct validity.</p>
 
         <p>Some examples. To measure "deception," an eval might present the model with a scenario where lying would help it achieve a goal, then check whether the response contains false statements. To measure "bioweapons risk," the proxy might be a set of chemistry questions where a correct, detailed answer is scored as dangerous. To measure "compliance," the eval might fire a batch of policy-violating prompts and count refusal rates. Each is a reasonable starting point, but none of them <em>is</em> the thing it claims to measure. The deception proxy might just be measuring whether the model is bad at role-play. The compliance proxy might reward models that refuse everything, including benign requests.</p>
 
@@ -90,14 +90,14 @@
 
         <h2>Red flags that override everything</h2>
 
-        <p>The part that changed how I think about eval quality: <strong>red flags can override an otherwise perfect score</strong>. An eval can score 95/100 on evidence completeness and still land at "review required" because of a single major red flag. Here are the ones I watch for:</p>
+        <p>The part that changed how I think about eval quality: red flags can override an otherwise perfect score. An eval can score 95/100 on evidence completeness and still land at "review required" because of a single major red flag. Here are the ones I watch for:</p>
 
         <ul>
-          <li><strong>Possible overfitting on dev/public prompts</strong>. <em>Detect:</em> score drops significantly on held-out items not seen during development. <em>Mitigate:</em> maintain a sealed test partition that eval developers never see during item authoring.</li>
-          <li><strong>Mono-method bias</strong> (single elicitation strategy). <em>Detect:</em> score changes dramatically when you switch from direct-ask to roleplay or multi-turn persuasion. <em>Mitigate:</em> require at least two independent elicitation methods and report scores for each.</li>
-          <li><strong>Score instability across minor prompt variants</strong>. <em>Detect:</em> paraphrase a subset of prompts without changing intent; score variance exceeds expected CI. <em>Mitigate:</em> include prompt paraphrases in the eval set and report sensitivity.</li>
-          <li><strong>Ceiling/floor effects hiding real variance</strong>. If most items score 0% or 100%, the distribution collapses and you can't distinguish models. Calibrate item difficulty so scores spread across the range.</li>
-          <li><strong>Construct underrepresentation</strong> (only tests one facet). All items probe the same scenario type or domain. Map items to a construct taxonomy and check coverage.</li>
+          <li>Possible overfitting on dev/public prompts. <em>Detect:</em> score drops significantly on held-out items not seen during development. <em>Mitigate:</em> maintain a sealed test partition that eval developers never see during item authoring.</li>
+          <li>Mono-method bias (single elicitation strategy). <em>Detect:</em> score changes dramatically when you switch from direct-ask to roleplay or multi-turn persuasion. <em>Mitigate:</em> require at least two independent elicitation methods and report scores for each.</li>
+          <li>Score instability across minor prompt variants. <em>Detect:</em> paraphrase a subset of prompts without changing intent; score variance exceeds expected CI. <em>Mitigate:</em> include prompt paraphrases in the eval set and report sensitivity.</li>
+          <li>Ceiling/floor effects hiding real variance. If most items score 0% or 100%, the distribution collapses and you can't distinguish models. Calibrate item difficulty so scores spread across the range.</li>
+          <li>Construct underrepresentation (only tests one facet). All items probe the same scenario type or domain. Map items to a construct taxonomy and check coverage.</li>
         </ul>
 
         <p>This maps well to how safety systems work in practice. In content moderation, a piece of content can pass every automated check and still get escalated because of one contextual signal. The same logic applies to eval quality: evidence completeness is necessary but not sufficient.</p>
@@ -133,15 +133,15 @@
 
         <p>If I were starting an eval from scratch today, this is the minimum I'd want documented before trusting any score it produces:</p>
 
-        <ol>
-          <li><strong>Construct card</strong>: one paragraph defining what you're measuring and, equally important, what you're not. "This eval measures whether the model provides actionable instructions for synthesizing controlled substances. It does not measure general chemistry knowledge or intent."</li>
-          <li><strong>Item justification</strong>: for each test item or category, one sentence on why it belongs. If you can't articulate why a prompt is in your eval, it probably shouldn't be.</li>
-          <li><strong>Confounds list</strong>: at least three alternative explanations for high/low scores, with mitigations. No mitigation = zero credit for that confound.</li>
-          <li><strong>Elicitation disclosure</strong>: how you prompted the model, how many turns, what system prompt, whether you used jailbreaks or persuasion techniques. A model that "passes" under weak elicitation tells you very little.</li>
-          <li><strong>Reproducibility bundle</strong>: model version, dataset hash, scorer version, seeds, config. Everything someone needs to rerun and get the same numbers.</li>
-          <li><strong>Relations to other variables</strong>: convergent and discriminant checks. Does the deception score correlate with independent deception indicators (sandbagging, goal-misalignment) and <em>not</em> correlate with superficial style? Do refusal-heavy models score higher on "compliance," and if so, does that mean the metric measures refusal propensity rather than policy understanding? These sanity checks (what measurement scientists call <strong>convergent and discriminant validity</strong>) are how you catch metrics that look right but measure the wrong thing.</li>
-          <li><strong>Comparability statement</strong>: under what conditions can scores be compared across model versions, API snapshots, or time periods? If the eval was developed against GPT-4-0613 and you're now scoring a different model family, what assumptions break? Documenting this up front prevents apples-to-oranges comparisons downstream.</li>
-        </ol>
+        <ul>
+          <li>Construct card: one paragraph defining what you're measuring and, equally important, what you're not. "This eval measures whether the model provides actionable instructions for synthesizing controlled substances. It does not measure general chemistry knowledge or intent."</li>
+          <li>Item justification: for each test item or category, one sentence on why it belongs. If you can't articulate why a prompt is in your eval, it probably shouldn't be.</li>
+          <li>Confounds list: at least three alternative explanations for high/low scores, with mitigations. No mitigation = zero credit for that confound.</li>
+          <li>Elicitation disclosure: how you prompted the model, how many turns, what system prompt, whether you used jailbreaks or persuasion techniques. A model that "passes" under weak elicitation tells you very little.</li>
+          <li>Reproducibility bundle: model version, dataset hash, scorer version, seeds, config. Everything someone needs to rerun and get the same numbers.</li>
+          <li>Relations to other variables: convergent and discriminant checks. Does the deception score correlate with independent deception indicators (sandbagging, goal-misalignment) and <em>not</em> correlate with superficial style? Do refusal-heavy models score higher on "compliance," and if so, does that mean the metric measures refusal propensity rather than policy understanding? These sanity checks (what measurement scientists call convergent and discriminant validity) are how you catch metrics that look right but measure the wrong thing.</li>
+          <li>Comparability statement: under what conditions can scores be compared across model versions, API snapshots, or time periods? If the eval was developed against GPT-4-0613 and you're now scoring a different model family, what assumptions break? Documenting this up front prevents apples-to-oranges comparisons downstream.</li>
+        </ul>
 
         <p>This isn't comprehensive. A full validity framework has more layers. I'm less sure about #6 and #7: relations to other variables and comparability statements matter, but they might be too much to ask for in a v1. The first five are non-negotiable. If every eval shipped with even those, the field would be in a materially better place.</p>
 
@@ -149,15 +149,15 @@
 
         <p>Reproducibility isn't binary. I think of it as three levels, each progressively harder:</p>
 
-        <p><strong>Level 1: Repeatability.</strong> Same code, same machine, same seeds → identical output. For offline supervised evals with pinned artifacts, this is straightforward. Pin your seed, version your data, and the pipeline gives you the same numbers every time. I could rerun a content safety classifier eval six months later and match results to the fourth decimal.</p>
+        <p>Level 1: Repeatability. Same code, same machine, same seeds → identical output. For offline supervised evals with pinned artifacts, this is straightforward. Pin your seed, version your data, and the pipeline gives you the same numbers every time. I could rerun a content safety classifier eval six months later and match results to the fourth decimal.</p>
 
-        <p><strong>Level 2: Independent rerun.</strong> Different machine, different time, same config → scores within a confidence interval. This is where LLM evals start to struggle. Even with temperature at zero, floating-point non-determinism across hardware, batching order, and top-p sampling all introduce variance. A model scored at 82% on Monday might score 79% on Wednesday with identical inputs.</p>
+        <p>Level 2: Independent rerun. Different machine, different time, same config → scores within a confidence interval. This is where LLM evals start to struggle. Even with temperature at zero, floating-point non-determinism across hardware, batching order, and top-p sampling all introduce variance. A model scored at 82% on Monday might score 79% on Wednesday with identical inputs.</p>
 
-        <p><strong>Level 3: Comparability over time.</strong> Model API drift, version changes, infrastructure updates → you need regression monitoring. This is the hardest level, and the one most teams skip entirely.</p>
+        <p>Level 3: Comparability over time. Model API drift, version changes, infrastructure updates → you need regression monitoring. This is the hardest level, and the one most teams skip entirely.</p>
 
         <p>For offline supervised evals with pinned artifacts, repeatability is tractable. But distributed training nondeterminism, hardware variance, and data drift mean it's not universally solved. It's just easier than the LLM case.</p>
 
-        <p>A <strong>run bundle</strong> captures everything needed to replay an eval: model version, dataset version, scorer version, code commit, random seeds, config flags. A lockfile for your evaluation, pinning every moving part so that "rerun" actually means something.</p>
+        <p>A run bundle captures everything needed to replay an eval: model version, dataset version, scorer version, code commit, random seeds, config flags. A lockfile for your evaluation, pinning every moving part so that "rerun" actually means something.</p>
 
         <div class="diagram-wrap">
           <div class="flow-vertical">
@@ -189,19 +189,19 @@
 
         <p>Models served via API can change silently: requantization, routing changes, safety-layer updates, even full model swaps behind a stable version string. This is Level 3 reproducibility, and most teams have no infrastructure for it.</p>
 
-        <p>The fix: run periodic re-evals on a fixed <strong>canary set</strong> (a small, stable subset of your eval), track score distributions over time, and alert on shifts beyond your expected confidence interval. If your canary drifts by more than 2× SEM without a known model update, something changed and you need to investigate. This is basic regression monitoring. It's almost nonexistent in the eval ecosystem.</p>
+        <p>The fix: run periodic re-evals on a fixed canary set (a small, stable subset of your eval), track score distributions over time, and alert on shifts beyond your expected confidence interval. If your canary drifts by more than 2× SEM without a known model update, something changed and you need to investigate. This is basic regression monitoring. It's almost nonexistent in the eval ecosystem.</p>
 
         <h2>Statistics: making scores meaningful</h2>
 
         <p>A bare score is an estimate, not a fact. Your eval questions are a sample from a larger universe of possible questions, and the score is a statistic with uncertainty around it. A few concepts make that uncertainty visible:</p>
 
-        <p><strong>SEM and confidence intervals.</strong> The <strong>standard error of the mean</strong> tells you how much your score would vary if you drew a different sample of questions. For a binary eval (correct/incorrect), report ±1.96 × SEM for a 95% confidence interval. This turns "82%" into "82% ± 5.3%," which is a fundamentally different claim.</p>
+        <p><strong>SEM and confidence intervals.</strong> The standard error of the mean tells you how much your score would vary if you drew a different sample of questions. For a binary eval (correct/incorrect), report ±1.96 × SEM for a 95% confidence interval. This turns "82%" into "82% ± 5.3%," which is a fundamentally different claim.</p>
 
-        <p><strong>Clustering.</strong> Many evals have non-independent questions: multi-turn conversations, questions about the same passage, items from the same topic cluster. Treating these as independent underestimates uncertainty. <strong>Clustered standard errors</strong> account for within-group correlation and can be 3× larger than naive SEs. If your eval has grouping structure and you ignore it, your confidence intervals are lying to you.</p>
+        <p>Clustering. Many evals have non-independent questions: multi-turn conversations, questions about the same passage, items from the same topic cluster. Treating these as independent underestimates uncertainty. Clustered standard errors account for within-group correlation and can be 3× larger than naive SEs. If your eval has grouping structure and you ignore it, your confidence intervals are lying to you.</p>
 
-        <p><strong>Paired differences.</strong> When comparing two models, use paired comparisons on identical questions rather than two independent samples. This eliminates question-difficulty variance (some questions are just harder) and gives much tighter estimates of the actual performance gap.</p>
+        <p>Paired differences. When comparing two models, use paired comparisons on identical questions rather than two independent samples. This eliminates question-difficulty variance (some questions are just harder) and gives much tighter estimates of the actual performance gap.</p>
 
-        <p><strong>Variance reduction.</strong> For stochastic models, resample chain-of-thought multiple times per question and average at the question level. This reduces sampling noise and gives a more stable estimate of what the model actually does on each item.</p>
+        <p>Variance reduction. For stochastic models, resample chain-of-thought multiple times per question and average at the question level. This reduces sampling noise and gives a more stable estimate of what the model actually does on each item.</p>
 
         <h3>Worked example: what "82%" actually means</h3>
 
@@ -216,13 +216,13 @@
         <p>To make this concrete, here's how the full framework applies to a hypothetical "policy compliance" eval:</p>
 
         <ul>
-          <li><strong>Construct card:</strong> measures whether the model refuses policy-violating requests while accepting benign ones. In scope: direct policy violations across content categories. Out of scope: edge cases, cultural context, ambiguous requests.</li>
-          <li><strong>Confounds identified:</strong> (1) refusal propensity, where the model might refuse everything, inflating compliance score; (2) prompt format sensitivity, where the score might depend on whether the request is phrased as a question vs. instruction; (3) system prompt leakage, where the model might pattern-match on safety-sounding system prompts rather than evaluating content.</li>
-          <li><strong>Elicitation:</strong> three strategies (direct ask, roleplay scenario, multi-turn persuasion). Report scores separately for each.</li>
-          <li><strong>Convergent check:</strong> compliance score should correlate with independent "instruction following" benchmarks. It should <em>not</em> correlate with "helpfulness" scores. If it anti-correlates with helpfulness, you might be measuring refusal, not compliance.</li>
-          <li><strong>Statistics:</strong> 150 items across 15 topic clusters. Report clustered SEM, not naive SEM.</li>
-          <li><strong>Reproducibility:</strong> run bundle pinned (model version, dataset hash, scorer commit, seeds). Five replicate runs → 89.2% ± 1.8%.</li>
-          <li><strong>Comparability:</strong> valid for comparisons within the same model family and API version. Cross-family comparisons require re-validation of prompt format assumptions.</li>
+          <li>Construct card: measures whether the model refuses policy-violating requests while accepting benign ones. In scope: direct policy violations across content categories. Out of scope: edge cases, cultural context, ambiguous requests.</li>
+          <li>Confounds identified: (1) refusal propensity, where the model might refuse everything, inflating compliance score; (2) prompt format sensitivity, where the score might depend on whether the request is phrased as a question vs. instruction; (3) system prompt leakage, where the model might pattern-match on safety-sounding system prompts rather than evaluating content.</li>
+          <li>Elicitation: three strategies (direct ask, roleplay scenario, multi-turn persuasion). Report scores separately for each.</li>
+          <li>Convergent check: compliance score should correlate with independent "instruction following" benchmarks. It should <em>not</em> correlate with "helpfulness" scores. If it anti-correlates with helpfulness, you might be measuring refusal, not compliance.</li>
+          <li>Statistics: 150 items across 15 topic clusters. Report clustered SEM, not naive SEM.</li>
+          <li>Reproducibility: run bundle pinned (model version, dataset hash, scorer commit, seeds). Five replicate runs → 89.2% ± 1.8%.</li>
+          <li>Comparability: valid for comparisons within the same model family and API version. Cross-family comparisons require re-validation of prompt format assumptions.</li>
         </ul>
 
         <p>None of this is exotic methodology. It's basic measurement hygiene. Almost no AI eval ships with it.</p>
@@ -232,11 +232,11 @@
         <p>The AI safety eval ecosystem doesn't lack benchmarks. It lacks infrastructure for assessing whether those benchmarks measure the right things. What would that infrastructure look like?</p>
 
         <ul>
-          <li><strong>Shared validity contracts</strong> as a field norm, not optional, not aspirational, but expected in every eval release.</li>
-          <li><strong>Eval registries</strong> with construct cards and confound lists, so teams can compare not just scores but the quality of evidence behind those scores.</li>
-          <li><strong>Standardized run bundles</strong> for reproducibility, so "rerun this eval" is a single command, not an archaeology project.</li>
-          <li><strong>Statistical reporting standards</strong> (confidence intervals, clustering adjustments, paired differences) as default practice, not afterthought.</li>
-          <li><strong>Regression monitoring</strong> for API-served models, with canary sets and automated drift alerts.</li>
+          <li>Shared validity contracts as a field norm, not optional, not aspirational, but expected in every eval release.</li>
+          <li>Eval registries with construct cards and confound lists, so teams can compare not just scores but the quality of evidence behind those scores.</li>
+          <li>Standardized run bundles for reproducibility, so "rerun this eval" is a single command, not an archaeology project.</li>
+          <li>Statistical reporting standards (confidence intervals, clustering adjustments, paired differences) as default practice, not afterthought.</li>
+          <li>Regression monitoring for API-served models, with canary sets and automated drift alerts.</li>
         </ul>
 
         <p>The models are getting more capable. The evals are multiplying. But "should we trust this eval?" is still mostly a gut call. That's what I want to work on next: not more evals, but the tooling and norms that make existing evals auditable.</p>
