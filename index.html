@@ -49,9 +49,9 @@
           the Trust & Safety ML team, building content moderation, child protection, and proactive
           intervention systems serving hundreds of millions of users. That work taught me what
           production safety requires: multi-stage oversight pipelines, policy-grounded evaluation,
-          and measurement frameworks that hold up under distributional shift. Now I'm building and
-          studying practical guardrails: eval validity, red teaming methodology, and interventions
-          that measurably reduce harm in production.
+          and measurement frameworks that hold up under distributional shift. Now I'm researching human-AI complementarity for scalable oversight,
+          and building open tooling to make rigorous safety evaluation accessible beyond
+          the organizations that can afford to build it from scratch.
         </p>
         <div class="focus-tags">
           <span>Safety ML</span>
@@ -91,6 +91,9 @@
             <p class="timeline-company">Stanford / UC Berkeley</p>
             <ul>
               <li>Researching human-AI complementarity for harm identification: how to combine human expertise with model capabilities to improve safety evaluation coverage and reliability, building on <a href="https://arxiv.org/abs/2510.26518" target="_blank" rel="noopener">DeepMind's collaborative safety work</a></li>
+              <li>Surveyed agentic safety benchmarks for complementarity potential, identifying which datasets have viable gaps between human and AI performance for safety monitoring tasks</li>
+              <li>Ran cost, statistical, and behavioral analyses on complementarity results, finding that hybrid human-AI routing achieves comparable accuracy at a fraction of the cost of full human evaluation</li>
+              <li>Researching new datasets targeting gaps where human oversight adds measurable value</li>
             </ul>
           </div>
         </div>
@@ -103,6 +106,7 @@
             <p class="timeline-company">AI Safety Camp</p>
             <ul>
               <li>Building open tooling for safety evaluation and red teaming, focused on making rigorous eval methodology accessible beyond frontier labs</li>
+              <li>Researched and wrote implementation specs that translate eval best practices (construct validity, dataset documentation, reproducibility) into requirements for open safety eval tooling</li>
             </ul>
           </div>
         </div>
@@ -117,7 +121,7 @@
               <li>Built PlayStation's Trust & Safety ML function from the ground up as first engineer, growing the team to 8. Owned the full lifecycle: product scoping, HITL data pipelines, model training, and production inference serving hundreds of millions of users</li>
               <li>Designed and deployed <a href="https://sonyinteractive.com/en/news/blog/encouraging-positive-player-experiences-with-limited-trial-feature/" target="_blank" rel="noopener">proactive intervention systems</a>: safeguards that flag harmful content before it's sent, giving users a chance to self-correct. Roughly 30% of flagged messages were edited or deleted, with harmful message rates dropping 11-15% versus control</li>
               <li>Architected multimodal and voice safety systems, including audio-native toxicity classifiers and combined text/<a href="https://sonyinteractive.com/en/news/blog/playstation-celebrates-safer-internet-day-2026/" target="_blank" rel="noopener">image detection</a> for content policy enforcement at scale</li>
-              <li>Built multi-stage pipelines for rare-event detection, surfacing roughly 100 actionable cases per 1B interactions: candidate generation, encoder classifiers, LLM-based policy evaluation, and human-in-the-loop escalation. Applied to child safety with 10x improvement in valid case rate compared to existing vendor solutions, and expanding to self-harm detection. Collaborating with ROOST on open child safety model weights</li>
+              <li>Built multi-stage pipelines for rare-event detection, detecting hundreds of actionable instances from billions of events: candidate generation, encoder classifiers, LLM-based policy evaluation, and human-in-the-loop escalation. Applied to child safety with 10x improvement in valid case rate compared to existing vendor solutions, and expanding to self-harm detection. Working on open-sourcing the grooming detection classifier from this pipeline to help other platforms build on the same layered approach</li>
               <li>Established measurement frameworks for distributional robustness and demographic fairness in safety classifiers. Used LLM-based synthetic data generation to diagnose and correct measurement bias in high-risk content moderation models. <a href="https://www.techpolicy.press/researchers-explore-the-use-of-llms-for-content-moderation/" target="_blank" rel="noopener">Presented at Stanford TSRC</a></li>
               <li>Built LLM-powered policy adaptation tools with evaluation pipelines (test datasets, scoring rubrics, failure-mode analysis) and established production inference infrastructure: model compilation, batching optimization, and Kubernetes orchestration</li>
             </ul>
@@ -171,17 +175,17 @@
 
         <div class="project-card">
           <h3>Human-AI Complementarity for Harm Identification</h3>
-          <p>SPAR research project investigating how human expertise and AI capabilities can be optimally combined for identifying harmful content, building on <a href="https://arxiv.org/abs/2510.26518" target="_blank" rel="noopener">DeepMind's foundational work in human-AI collaboration</a>. <a href="https://sparai.org/projects/sp26/recu4ePI8o6thONSs" target="_blank" rel="noopener">Project page &rarr;</a></p>
+          <p>SPAR research extending <a href="https://arxiv.org/abs/2510.26518" target="_blank" rel="noopener">DeepMind's work</a> on human-AI collaboration for safety. Surveyed agentic safety benchmarks for complementarity potential and analyzed cost, validity, and behavioral patterns in existing results. Researching new datasets targeting gaps where human oversight adds measurable value. <a href="https://sparai.org/projects/sp26/recu4ePI8o6thONSs" target="_blank" rel="noopener">Project page &rarr;</a></p>
           <div class="project-tags">
-            <span>SPAR</span><span>AI Safety</span><span>Human-AI</span><span>Research</span>
+            <span>SPAR</span><span>Scalable Oversight</span><span>Evaluation</span><span>Research</span>
           </div>
         </div>
 
         <div class="project-card">
           <h3>Democratizing AI Safety Evals</h3>
-          <p>AI Safety Camp research project focused on making safety evaluation and red teaming tools more accessible to a broader community of researchers, developers, and organizations. <a href="https://www.aisafety.camp/#h.aejyh18zkvbc" target="_blank" rel="noopener">Project page &rarr;</a></p>
+          <p>AI Safety Camp project focused on making safety evaluation and red teaming tools more accessible to a broader community of researchers, developers, and organizations. Researched and wrote implementation specs for construct validity gates, dataset quality documentation, and reproducibility/lineage tracking, translating research best practices into accessible tooling. <a href="https://www.aisafety.camp/#h.aejyh18zkvbc" target="_blank" rel="noopener">Project page &rarr;</a></p>
           <div class="project-tags">
-            <span>AI Safety Camp</span><span>Red Teaming</span><span>Evals</span><span>Tools</span>
+            <span>AI Safety Camp</span><span>Eval Tooling</span><span>Construct Validity</span><span>Open Source</span>
           </div>
         </div>
 
