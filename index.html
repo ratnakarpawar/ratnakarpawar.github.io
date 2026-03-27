@@ -91,7 +91,7 @@
             <p class="timeline-company">Stanford / UC Berkeley</p>
             <ul>
               <li>Researching human-AI complementarity for harm identification: how to combine human expertise with model capabilities to improve safety evaluation coverage and reliability, building on <a href="https://arxiv.org/abs/2510.26518" target="_blank" rel="noopener">DeepMind's collaborative safety work</a></li>
-              <li>Surveyed agentic safety benchmarks for complementarity potential, identifying which datasets have viable gaps between human and AI performance for safety monitoring tasks</li>
+              <li>Evaluated multimodal agentic safety benchmarks covering long-running computer-use tasks, desktop and browser trajectories, and tool-use traces, identifying which datasets have viable gaps between human and AI performance for safety monitoring</li>
               <li>Ran cost, statistical, and behavioral analyses on complementarity results, finding that hybrid human-AI routing achieves comparable accuracy at a fraction of the cost of full human evaluation</li>
               <li>Researching new datasets targeting gaps where human oversight adds measurable value</li>
             </ul>
@@ -123,7 +123,8 @@
               <li>Architected multimodal and voice safety systems, including audio-native toxicity classifiers and combined text/<a href="https://sonyinteractive.com/en/news/blog/playstation-celebrates-safer-internet-day-2026/" target="_blank" rel="noopener">image detection</a> for content policy enforcement at scale</li>
               <li>Built multi-stage pipelines for rare-event detection, detecting hundreds of actionable instances from billions of events: candidate generation, encoder classifiers, LLM-based policy evaluation, and human-in-the-loop escalation. Applied to child safety with 10x improvement in valid case rate compared to existing vendor solutions, and expanding to self-harm detection. Working on open-sourcing the grooming detection classifier from this pipeline to help other platforms build on the same layered approach</li>
               <li>Established measurement frameworks for distributional robustness and demographic fairness in safety classifiers. Used LLM-based synthetic data generation to diagnose and correct measurement bias in high-risk content moderation models. <a href="https://www.techpolicy.press/researchers-explore-the-use-of-llms-for-content-moderation/" target="_blank" rel="noopener">Presented at Stanford TSRC</a></li>
-              <li>Built LLM-powered policy adaptation tools with evaluation pipelines (test datasets, scoring rubrics, failure-mode analysis) and established production inference infrastructure: model compilation, batching optimization, and Kubernetes orchestration</li>
+              <li>Designed agentic moderation system for reactive report handling: policy-grounded agents that gather evidence across text, voice, and media, apply policy via RAG, and route decisions by confidence to human moderators or auto-resolution, with adversarial hardening and observability throughout</li>
+              <li>Built LLM-powered tooling for content moderation: data annotation pipelines (fine-tuning, few-shot, weak supervision) for multilingual labeling, policy adaptation tools with evaluation pipelines, and production inference infrastructure including model compilation, batching, and Kubernetes orchestration</li>
             </ul>
           </div>
         </div>
@@ -175,7 +176,7 @@
 
         <div class="project-card">
           <h3>Human-AI Complementarity for Harm Identification</h3>
-          <p>SPAR research extending <a href="https://arxiv.org/abs/2510.26518" target="_blank" rel="noopener">DeepMind's work</a> on human-AI collaboration for safety. Surveyed agentic safety benchmarks for complementarity potential and analyzed cost, validity, and behavioral patterns in existing results. Researching new datasets targeting gaps where human oversight adds measurable value. <a href="https://sparai.org/projects/sp26/recu4ePI8o6thONSs" target="_blank" rel="noopener">Project page &rarr;</a></p>
+          <p>SPAR research extending <a href="https://arxiv.org/abs/2510.26518" target="_blank" rel="noopener">DeepMind's work</a> on human-AI collaboration for safety. Evaluated multimodal agentic safety benchmarks (computer-use trajectories, browser tasks, tool-use traces) for complementarity potential and analyzed cost, validity, and behavioral patterns in existing results. Researching new datasets targeting gaps where human oversight adds measurable value. <a href="https://sparai.org/projects/sp26/recu4ePI8o6thONSs" target="_blank" rel="noopener">Project page &rarr;</a></p>
           <div class="project-tags">
             <span>SPAR</span><span>Scalable Oversight</span><span>Evaluation</span><span>Research</span>
           </div>
