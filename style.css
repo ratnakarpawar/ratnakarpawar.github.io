@@ -1409,3 +1409,77 @@ ul {
     font-size: 1.5rem;
   }
 }
+
+/* ---------- Working paper pages ---------- */
+
+.post-meta-links {
+  font-size: 0.9rem;
+  color: #888;
+  margin-top: 12px;
+  line-height: 1.8;
+}
+
+.paper-note {
+  background: #f7f7f5;
+  border-left: 2px solid #d4d4d0;
+  padding: 16px 20px;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: #555;
+  margin-bottom: 32px;
+}
+
+.paper-body table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-size: 0.82rem;
+  margin: 20px 0 24px;
+}
+
+.paper-body th,
+.paper-body td {
+  text-align: left;
+  padding: 7px 10px;
+  border-bottom: 1px solid #ececea;
+  vertical-align: top;
+}
+
+.paper-body th {
+  font-weight: 600;
+  color: #1a1a1a;
+  border-bottom: 1px solid #c8c8c4;
+  white-space: nowrap;
+}
+
+.paper-body caption {
+  caption-side: bottom;
+  text-align: left;
+  font-size: 0.82rem;
+  color: #888;
+  line-height: 1.55;
+  padding-top: 8px;
+}
+
+.paper-body .table-wrap {
+  overflow-x: auto;
+}
+
+.paper-body code,
+.paper-body tt {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.86em;
+  background: #f4f4f2;
+  padding: 1px 4px;
+  border-radius: 2px;
+}
+
+@media (max-width: 700px) {
+  .paper-body table {
+    font-size: 0.74rem;
+  }
+  .paper-body th,
+  .paper-body td {
+    padding: 5px 6px;
+  }
+}
