@@ -58,8 +58,8 @@
           <span>Red Teaming</span>
           <span>Oversight Systems</span>
           <span>LLM Guardrails</span>
-          <span>Harms & Abuse Detection</span>
-          <span>Robustness & Fairness</span>
+          <span>Harms &amp; Abuse Detection</span>
+          <span>Robustness &amp; Fairness</span>
         </div>
         <div class="hero-writing">
           <a href="pages/blog/notes-on-eval-validity.html">Selected writing: Notes on AI Eval Validity &rarr;</a>
@@ -104,7 +104,7 @@
               <li>Researching human-AI complementarity for harm identification: how to combine human expertise with model capabilities to improve safety evaluation coverage and reliability, building on <a href="https://arxiv.org/abs/2510.26518" target="_blank" rel="noopener">DeepMind's collaborative safety work</a></li>
               <li>Built and released a source-grounded benchmark for when rules should and shouldn't treat people differently: 817 paired items across 64 topics, 40+ institutions, and 10 jurisdictions. Generated cross-vendor so no model audits its own output, after finding same-vendor generation inflates scores by up to 15 points</li>
               <li>Found that models track current norms rather than the rule actually cited. On pairs where two versions of a guideline differ only in whether a demographic axis is a legitimate input, a seven-model panel drops to 0.22 on the superseded rule</li>
-              <li>Measured the human side with a rating study: raters showed none of the models' systematic asymmetry on equal-treatment items, and were weakest exactly where models are strong. Evidence that human and model errors are differently distributed, which is the precondition for oversight to add anything</li>
+              <li>Measured the human side with a rating study: raters showed none of the models' systematic asymmetry on equal-treatment items, and were weakest exactly where models are strong. So human and model errors fall in different places, which oversight needs in order to add anything</li>
               <li>Surveyed multimodal agentic safety benchmarks (computer-use, browser, and tool-use trajectories) for oversight headroom, finding most already saturated for frontier models as trajectory monitors, then built the pipeline to construct data that isn't: extract verified criteria from authoritative sources, perturb them into paired items with known ground truth</li>
             </ul>
           </div>
@@ -127,15 +127,19 @@
           <div class="timeline-marker"></div>
           <div class="timeline-content">
             <span class="timeline-date">2021 - Present</span>
-            <h3>Staff ML Engineer, Trust & Safety ML Lead</h3>
+            <h3>Staff ML Engineer, Trust &amp; Safety ML Lead</h3>
             <p class="timeline-company">PlayStation (Sony Interactive Entertainment)</p>
             <ul>
-              <li>Built PlayStation's Trust &amp; Safety ML function from the ground up as first engineer, growing the team to 8. Owned the full lifecycle: product scoping, human-in-the-loop data pipelines, model training, and production inference serving hundreds of millions of players</li>
-              <li>Built multilingual classifiers and detection systems for coordinated abuse, not just individual violations: scam and spam networks operating tens of thousands of accounts in concert, screened continuously from billions of messages. Detecting them means aggregating signals across accounts, languages, and time rather than scoring messages in isolation, since no single message in a campaign looks anomalous on its own</li>
-              <li>Built multi-stage pipelines that surface hundreds of actionable cases from billions of events: candidate generation, encoder classifiers, LLM policy evaluation, human escalation. On child safety, roughly 10x the valid case rate of the incumbent vendor at a fraction of the cost, now extending to self-harm detection. Open-sourcing the grooming classifier so other platforms can reuse the layered approach</li>
-              <li>Shipped an agentic moderation service that gathers evidence across text, <a href="https://sonyinteractive.com/en/news/blog/playstation-celebrates-safer-internet-day-2026/" target="_blank" rel="noopener">image</a>, and voice, retrieves the relevant slice of a large policy corpus, and returns a policy-grounded verdict with an evidence bundle and a routing decision to human review or auto-resolution. Designed the properties that make that trustworthy: a deterministic recall floor guaranteeing high-risk coverage when semantic selection misses, escalation rules derived from policy rather than hand-maintained, and degradation that names itself in the response instead of quietly returning a clean verdict</li>
-              <li>Established measurement frameworks for distributional robustness and demographic fairness in safety classifiers, using synthetic data generation to diagnose and correct measurement bias in high-risk models. Also deployed <a href="https://sonyinteractive.com/en/news/blog/encouraging-positive-player-experiences-with-limited-trial-feature/" target="_blank" rel="noopener">proactive interventions</a> that flag harmful content before sending: ~30% of flagged messages were edited or deleted, with harmful message rates down 11-15% against control. <a href="https://www.techpolicy.press/researchers-explore-the-use-of-llms-for-content-moderation/" target="_blank" rel="noopener">Presented at Stanford TSRC</a></li>
-              <li>Built the data and inference infrastructure underneath all of it: synthetic data and weak-supervision pipelines for multilingual classifier training, audio-native toxicity models over a speech detection and transcription chain, and production serving with model compilation, batching, and Kubernetes orchestration at millions of items per day</li>
+              <li>Architected the multi-stage pipelines that surface hundreds of actionable cases from billions of events: candidate generation, encoder classifiers, LLM policy evaluation, human escalation. On child safety this now originates roughly 80% of our NCMEC reports, at 7x more confirmed grooming reports and roughly 10x the incumbent vendor's valid case rate, and is extending to self-harm. <a href="https://huggingface.co/sonyinteractive/grooming-risk-classifier" target="_blank" rel="noopener">Open-sourced the grooming classifier</a> so other platforms can reuse the layered approach</li>
+              <li>Led multilingual detection of coordinated abuse at the network level rather than the single message: scam and spam rings operating tens of thousands of accounts in concert, screened continuously from billions of messages. Catching them means aggregating signals across accounts, languages, and time, since no single message in a campaign looks anomalous on its own</li>
+              <li>Shipped an agentic moderation service that gathers evidence across text, <a href="https://sonyinteractive.com/en/news/blog/playstation-celebrates-safer-internet-day-2026/" target="_blank" rel="noopener">image</a>, and voice, retrieves the relevant slice of a large policy corpus, and returns a policy-grounded verdict with an evidence bundle and a routing decision to human review or auto-resolution. Designed the safeguards around the agent: a deterministic recall floor guaranteeing high-risk coverage when semantic selection misses, escalation rules derived from policy rather than hand-maintained, and degradation that names itself in the response instead of returning a clean verdict</li>
+              <li>Pitched LLM-based labeling and judging and took it from an argument to shared production capability: fine-tuning workflows, model endpoints, RAG SDKs, and evaluation harnesses other teams build on. A fine-tuned small open model matched a far larger few-shot baseline. The harder lesson was evaluative: a prompt that buys a large recall gain can multiply false positives several times over, so recall and reviewer burden have to be read together or you ship something nobody can staff</li>
+              <li>Replaced vendor image moderation with calibrated in-house models that separate policy categories and real photos from game screenshots, trained on labels from an ensemble of model voters plus human review and served as fp16 ONNX on CPU at millions of images per day. Moved automated action through shadow mode to an auto-hide pilot where policy experts reviewed every action. When the content policy changed, the old model's validation accuracy stopped predicting agreement with moderators, so labels are being rebuilt against the written policy rather than mixed</li>
+              <li>Made fairness a CI gate. Models trained on historical moderation data learn that an identity mention is itself a signal, so they flag "I love [group]" and miss hate aimed at groups the training data underrepresents. Fixed it with paired canary tests for celebration versus hate and balanced counterfactual data per protected group: AUPRC on the bias set went from 0.70 to 0.98 while general detection held flat, and the canaries now run on every build. <a href="https://www.techpolicy.press/researchers-explore-the-use-of-llms-for-content-moderation/" target="_blank" rel="noopener">Presented at Stanford TSRC</a></li>
+              <li>Shipped real-time bad-actor detection on PC security telemetry (debugger attachment, binary tampering) with streaming features and online models, starting with no labels: anomaly scoring surfaced candidates and a human labeling pipeline turned expert review into training data</li>
+              <li>Measured mitigations, not just detectors: <a href="https://sonyinteractive.com/en/news/blog/encouraging-positive-player-experiences-with-limited-trial-feature/" target="_blank" rel="noopener">proactive interventions</a> that flag harmful content before it is sent got ~30% of flagged messages edited or deleted, with harmful message rates down ~15% against control for a strict nudge and ~11% for a gentler one that adds less friction for players who were not going to offend</li>
+              <li>Scaled voice safety to 1M hours of audio per month by combining voice-native detection with text, since tone and delivery carry harm that a transcript loses</li>
+              <li>Founded PlayStation's Trust &amp; Safety ML function as first engineer and grew the team to 8, owning scoping, human-in-the-loop data pipelines, training, and serving (synthetic data and weak supervision, model compilation, adaptive batching, Kubernetes) for hundreds of millions of players</li>
             </ul>
           </div>
         </div>
@@ -178,8 +182,16 @@
       <div class="projects-grid">
 
         <div class="project-card">
+          <h3>Grooming Risk Classifier</h3>
+          <p>Open-sourced a safety classifier for grooming risk in conversations. On a held-out set sourced from NCMEC-reported cases it reaches 0.851 AUPRC and 0.93 precision in the top 10%. <a href="https://huggingface.co/sonyinteractive/grooming-risk-classifier" target="_blank" rel="noopener">Model &rarr;</a></p>
+          <div class="project-tags">
+            <span>Child Safety</span><span>Classifier</span><span>Open Source</span>
+          </div>
+        </div>
+
+        <div class="project-card">
           <h3>Self Harm Detection</h3>
-          <p>Won the OpenAI Safety Hackathon ($5k prize). Built an open-sourced system for detecting self-harm content, combining multimodal analysis to identify at-risk users and enable timely intervention. <a href="https://github.com/roostorg/model-community/tree/main/hackathon_demos/open-safeguard-dec-2025/self_harm" target="_blank" rel="noopener">Code &rarr;</a></p>
+          <p>Won the OpenAI Safety Hackathon ($5k prize). Built an open-source multimodal system that detects self-harm content and flags at-risk users for intervention. <a href="https://github.com/roostorg/model-community/tree/main/gpt-oss-safeguard/projects/open-safeguard-dec-2025/self_harm" target="_blank" rel="noopener">Code &rarr;</a></p>
           <div class="project-tags">
             <span>OpenAI</span><span>Safety</span><span>Multimodal</span><span>Open Source</span>
           </div>
@@ -187,7 +199,7 @@
 
         <div class="project-card">
           <h3>Multidimensional Difference Awareness Benchmark</h3>
-          <p>A benchmark for when a rule <em>should</em> treat people differently, and when it shouldn't. 817 paired items built from verbatim institutional sources across 10 jurisdictions, including the hard cases where a demographic axis is a legitimate input. The sharpest finding comes from rules that changed their minds: cite a superseded guideline and models apply today's version instead, down to 0.22. Human raters fail on different items than models do, without the models' systematic asymmetry, which is what makes routing between them worth the cost. <a href="pages/research/multidimensional-difference-awareness.html">Working paper &rarr;</a> <a href="https://huggingface.co/datasets/Complementarity/multidimensional-difference-awareness" target="_blank" rel="noopener">Dataset &rarr;</a> <a href="https://huggingface.co/datasets/Complementarity/difference-awareness-version-flip" target="_blank" rel="noopener">Version-flip set &rarr;</a></p>
+          <p>A benchmark for when a rule <em>should</em> treat people differently, and when it shouldn't. 817 paired items built from verbatim institutional sources across 10 jurisdictions, including the hard cases where a demographic axis is a legitimate input. The sharpest finding comes from rules that changed their minds: cite a superseded guideline and models apply today's version instead, down to 0.22. Human raters fail on different items than models do, without the models' systematic asymmetry, which is what makes routing between them worth the cost. <a href="pages/research/multidimensional-difference-awareness.html">Working paper &rarr;</a> <a href="https://huggingface.co/datasets/Complementarity/multidimensional-difference-awareness-legacy" target="_blank" rel="noopener">Dataset &rarr;</a> <a href="https://huggingface.co/datasets/Complementarity/difference-awareness-version-flip" target="_blank" rel="noopener">Version-flip set &rarr;</a></p>
           <div class="project-tags">
             <span>Benchmark</span><span>Scalable Oversight</span><span>Instruction Following</span><span>Open Data</span>
           </div>
@@ -195,7 +207,7 @@
 
         <div class="project-card">
           <h3>Human-AI Complementarity for Harm Identification</h3>
-          <p>SPAR research extending <a href="https://arxiv.org/abs/2510.26518" target="_blank" rel="noopener">DeepMind's work</a> on human-AI collaboration for safety. Evaluated multimodal agentic safety benchmarks (computer-use trajectories, browser tasks, tool-use traces) for complementarity potential, finding most are saturated for frontier models as trajectory monitors. Built the difference-awareness benchmark above to target a gap where human and model errors genuinely diverge, and ran human rating experiments to measure it. <a href="https://sparai.org/projects/sp26/recu4ePI8o6thONSs" target="_blank" rel="noopener">Project page &rarr;</a></p>
+          <p>SPAR research extending <a href="https://arxiv.org/abs/2510.26518" target="_blank" rel="noopener">DeepMind's work</a> on human-AI collaboration for safety. Evaluated multimodal agentic safety benchmarks (computer-use trajectories, browser tasks, tool-use traces) for complementarity potential, finding most are saturated for frontier models as trajectory monitors. Built the difference-awareness benchmark above to target a gap where human and model errors diverge, and ran human rating experiments to measure it. <a href="https://sparai.org/projects/sp26/recu4ePI8o6thONSs" target="_blank" rel="noopener">Project page &rarr;</a></p>
           <div class="project-tags">
             <span>SPAR</span><span>Scalable Oversight</span><span>Evaluation</span><span>Research</span>
           </div>
@@ -203,7 +215,7 @@
 
         <div class="project-card">
           <h3>Democratizing AI Safety Evals</h3>
-          <p>AI Safety Camp project focused on making safety evaluation and red teaming tools more accessible to a broader community of researchers, developers, and organizations. Researched and wrote implementation specs for construct validity gates, dataset quality documentation, and reproducibility/lineage tracking, translating research best practices into accessible tooling. <a href="https://www.aisafety.camp/#h.aejyh18zkvbc" target="_blank" rel="noopener">Project page &rarr;</a></p>
+          <p>AI Safety Camp project on making safety evaluation and red teaming tools usable outside frontier labs. Wrote implementation specs for construct validity gates, dataset quality documentation, and reproducibility/lineage tracking. <a href="https://www.aisafety.camp/#h.aejyh18zkvbc" target="_blank" rel="noopener">Project page &rarr;</a></p>
           <div class="project-tags">
             <span>AI Safety Camp</span><span>Eval Tooling</span><span>Construct Validity</span><span>Open Source</span>
           </div>

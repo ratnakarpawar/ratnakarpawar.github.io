@@ -50,7 +50,7 @@
 
       <div class="post-body">
 
-        <p>I've been thinking about what makes an AI safety evaluation trustworthy. Not whether a model passes or fails a benchmark, but whether the score actually means what we think it means. The thesis I keep arriving at: <strong>scores are only as good as the validity argument behind them</strong>. In measurement science, validity means justified score meaning plus justified use. A score without a validity argument is just a number.</p>
+        <p>I've been thinking about what makes an AI safety evaluation trustworthy, specifically whether a score means what we think it means. The thesis I keep arriving at: <strong>scores are only as good as the validity argument behind them</strong>. In measurement science, validity means justified score meaning plus justified use.</p>
 
         <h2>Why construct validity matters</h2>
 
@@ -62,7 +62,7 @@
 
         <p>Having spent years building content safety classifiers, I've seen this play out at scale. A hate speech model can have high accuracy on your test set and still fail badly on slang, coded language, or cultural context it never saw in training. At least with classical ML, you can diagnose this: confusion matrices, failure-mode inspection, tracing back to training data gaps.</p>
 
-        <p>With LLM safety evals, the gap is structurally worse. Behavior changes with temperature, prompt phrasing, system prompt context, even the order of examples. The task itself ("is this model safe?") doesn't have a clean mathematical definition. Construct validity isn't a nice-to-have. It's the difference between useful measurement and theater.</p>
+        <p>With LLM safety evals, the gap is structurally worse. Behavior changes with temperature, prompt phrasing, system prompt context, even the order of examples. The task itself ("is this model safe?") doesn't have a clean mathematical definition. Without construct validity, the eval is closer to theater than measurement.</p>
 
         <h2>The eval-as-measurement pipeline</h2>
 
@@ -192,7 +192,7 @@
           </div>
         </div>
 
-        <p>The useful constraint: a replay mismatch is not a failure, it's a signal. The status becomes "review required" because the point isn't that everything must be deterministic, but that differences must be explainable. If the score changed between Tuesday and Thursday, you need to know whether the model changed, the data changed, or the pipeline drifted.</p>
+        <p>The useful constraint: a replay mismatch sets the status to "review required" instead of failing the run. Everything doesn't have to be deterministic, but differences have to be explainable. If the score changed between Tuesday and Thursday, you need to know whether the model changed, the data changed, or the pipeline drifted.</p>
 
         <h3>API model drift and regression monitoring</h3>
 
@@ -234,21 +234,21 @@
           <li>Comparability: valid for comparisons within the same model family and API version. Cross-family comparisons require re-validation of prompt format assumptions.</li>
         </ul>
 
-        <p>None of this is exotic methodology. It's basic measurement hygiene. Almost no AI eval ships with it.</p>
+        <p>This is basic measurement hygiene, and almost no AI eval ships with it.</p>
 
         <h2>What trustworthy evals look like institutionally</h2>
 
         <p>The AI safety eval ecosystem doesn't lack benchmarks. It lacks infrastructure for assessing whether those benchmarks measure the right things. What would that infrastructure look like?</p>
 
         <ul>
-          <li>Shared validity contracts as a field norm, not optional, not aspirational, but expected in every eval release.</li>
-          <li>Eval registries with construct cards and confound lists, so teams can compare not just scores but the quality of evidence behind those scores.</li>
+          <li>Shared validity contracts as a field norm, expected in every eval release.</li>
+          <li>Eval registries with construct cards and confound lists, so teams can compare the quality of evidence behind scores as well as the scores.</li>
           <li>Standardized run bundles for reproducibility, so "rerun this eval" is a single command, not an archaeology project.</li>
-          <li>Statistical reporting standards (confidence intervals, clustering adjustments, paired differences) as default practice, not afterthought.</li>
+          <li>Statistical reporting standards (confidence intervals, clustering adjustments, paired differences) as default practice.</li>
           <li>Regression monitoring for API-served models, with canary sets and automated drift alerts.</li>
         </ul>
 
-        <p>The models are getting more capable. The evals are multiplying. But "should we trust this eval?" is still mostly a gut call. That's what I want to work on next: not more evals, but the tooling and norms that make existing evals auditable.</p>
+        <p>The models are getting more capable. The evals are multiplying. But "should we trust this eval?" is still mostly a gut call. What I want to work on next is the tooling and norms that make existing evals auditable.</p>
 
         <h2>Cite this post</h2>
         <pre class="cite-block">Pawar, R. (2026). Notes on Making AI Evals Actually Measure What They Claim. ratnakarpawar.github.io. https://ratnakarpawar.github.io/pages/blog/notes-on-eval-validity.html</pre>

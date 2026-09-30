@@ -10,3 +10,7 @@ assets/photo_o.jpg
 
 # Work in progress
 new_work/
+
+# Resume source and builds. Local only: this repo is public and content.py
+# carries phone number and full contact details.
+resume/
